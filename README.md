@@ -4,8 +4,6 @@
 
 This library parses Specctra DSN files and converts them into JSON for interoperability.
 
-[Specctra Language reference from Hackaday.io](https://cdn.hackaday.io/files/1666717130852064/specctra.pdf)
-
 ```ts
 import { parseSpecctraDsn } from "@tscircuit/specctra-dsn-json"
 
@@ -18,3 +16,11 @@ TODO
 
 ```
 
+## References
+
+- [Specctra Language reference from Hackaday.io](https://cdn.hackaday.io/files/1666717130852064/specctra.pdf)
+- [Example Specctra DSN files](https://github.com/freerouting/freerouting/tree/master/tests)
+
+## Development
+
+TODO
