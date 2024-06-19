@@ -40,9 +40,9 @@ function parsePCBDesign(sexprRoot: any[]): any {
       case "parser":
         result.parser = parseObject(ParserSchema, values)
         break
-      // case "resolution":
-      //   result.resolution = parseObject(ResolutionSchema, values)
-      //   break
+      case "resolution":
+        result.resolution = parseObject(ResolutionSchema, values)
+        break
       // case "structure":
       //   result.structure = parseObject(StructureSchema, values)
       //   break
@@ -67,16 +67,13 @@ function parsePCBDesign(sexprRoot: any[]): any {
   return PCBDesignSchema.parse(result)
 }
 
-function parseObject(schema: z.AnyZodObject | z.ZodAny, arrayData: any[]): any {
+function parseObject(schema: any, arrayData: any[]): any {
   const result: any = {}
-
-  console.log(arrayData)
 
   if (typeof arrayData[0] === "string" || typeof arrayData[0] === "number") {
     return schema.parse(arrayData)
   } else if (schema instanceof z.ZodObject) {
     arrayData.forEach(([key, value]) => {
-      console.log({ key, value })
       result[key] =
         Array.isArray(value) && value.every(Array.isArray)
           ? value.map((v) => parseObject(schema.shape[key], v))

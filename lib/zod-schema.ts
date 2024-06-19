@@ -19,10 +19,21 @@ export const ParserSchema = z.object({
 // Resolution schema
 export const ResolutionSchema = z
   .array(z.string())
-  .transform((a) => ({
-    unit: a[0],
-    value: parseFloat(a[1]!),
-  }))
+  .or(z.object())
+  .transform((a: any) => {
+    if (Array.isArray(a)) {
+      return {
+        unit: a[0],
+        value: parseFloat(a[1]!),
+      }
+      return {
+        unit: a[0],
+        value: parseFloat(a[1]!),
+      }
+    } else {
+      return a
+    }
+  })
   .pipe(
     z.object({
       unit: z.string(),
