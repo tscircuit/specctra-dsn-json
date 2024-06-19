@@ -161,15 +161,18 @@ export const WiringSchema = z.object({
 })
 
 // Main PCB Design schema
-export const PCBDesignSchema = z.object({
-  pcb: z.string(),
-  file: z.string(),
-  parser: ParserSchema,
-  resolution: ResolutionSchema,
-  unit: z.string(),
-  structure: StructureSchema,
-  placement: PlacementSchema,
-  library: LibrarySchema,
-  network: NetworkSchema,
-  wiring: WiringSchema,
-})
+export const PCBDesignSchema = z
+  .object({
+    pcb: z.string(),
+    file: z.string(),
+    parser: ParserSchema,
+    resolution: ResolutionSchema,
+    unit: z.string(),
+    structure: StructureSchema,
+    placement: PlacementSchema,
+    library: LibrarySchema,
+    network: NetworkSchema,
+    wiring: WiringSchema,
+  })
+  // TEMPORARY partial(): until parser is totally complete TODO
+  .partial()

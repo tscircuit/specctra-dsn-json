@@ -30,34 +30,37 @@ export const parseDsnToJson = (dsn: string) => {
   console.log(parsePCBDesign(sexpr))
 }
 
-function parsePCBDesign(arrayData: any[]): any {
+function parsePCBDesign(sexprRoot: any[]): any {
   const result: any = {}
 
-  arrayData.forEach(([key, ...values]) => {
+  const [pcbLiteral, filePath, ...sexprMainContent] = sexprRoot
+
+  sexprMainContent.forEach(([key, ...values]) => {
     switch (key) {
       case "parser":
         result.parser = parseObject(ParserSchema, values)
         break
-      case "resolution":
-        result.resolution = parseObject(ResolutionSchema, values)
-        break
-      case "structure":
-        result.structure = parseObject(StructureSchema, values)
-        break
-      case "placement":
-        result.placement = parseObject(PlacementSchema, values)
-        break
-      case "library":
-        result.library = parseObject(LibrarySchema, values)
-        break
-      case "network":
-        result.network = parseObject(NetworkSchema, values)
-        break
-      case "wiring":
-        result.wiring = parseObject(WiringSchema, values)
-        break
-      default:
-        result[key] = values
+      // case "resolution":
+      //   result.resolution = parseObject(ResolutionSchema, values)
+      //   break
+      // case "structure":
+      //   result.structure = parseObject(StructureSchema, values)
+      //   break
+      // case "placement":
+      //   result.placement = parseObject(PlacementSchema, values)
+      //   break
+      // case "library":
+      //   result.library = parseObject(LibrarySchema, values)
+      //   break
+      // case "network":
+      //   result.network = parseObject(NetworkSchema, values)
+      //   break
+      // case "wiring":
+      //   result.wiring = parseObject(WiringSchema, values)
+      //   break
+      default: {
+        console.log(`WARN: ignoring key ${key}`)
+      }
     }
   })
 
