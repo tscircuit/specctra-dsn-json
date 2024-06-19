@@ -1,10 +1,19 @@
 import { z } from "zod"
 
+export const YamlBool = z
+  .enum(["true", "false", "yes", "no", "on", "off"])
+  .or(z.boolean())
+  .transform((v) => {
+    if (typeof v === "boolean") return v
+    if (v === "true" || v === "yes" || v === "on") return true
+    return false
+  })
+
 // Parser schema
 export const ParserSchema = z.object({
-  spaceInQuotedTokens: z.boolean().optional(),
-  hostCad: z.string().optional(),
-  hostVersion: z.string().optional(),
+  space_in_quoted_tokens: YamlBool.optional(),
+  host_cad: z.string().optional(),
+  host_version: z.string().optional(),
 })
 
 // Resolution schema

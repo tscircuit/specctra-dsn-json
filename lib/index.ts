@@ -70,10 +70,13 @@ function parsePCBDesign(sexprRoot: any[]): any {
 function parseObject(schema: z.AnyZodObject | z.ZodAny, arrayData: any[]): any {
   const result: any = {}
 
+  console.log(arrayData)
+
   if (typeof arrayData[0] === "string" || typeof arrayData[0] === "number") {
     return schema.parse(arrayData)
   } else if (schema instanceof z.ZodObject) {
     arrayData.forEach(([key, value]) => {
+      console.log({ key, value })
       result[key] =
         Array.isArray(value) && value.every(Array.isArray)
           ? value.map((v) => parseObject(schema.shape[key], v))
