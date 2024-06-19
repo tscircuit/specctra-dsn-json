@@ -2,16 +2,24 @@ import { z } from "zod"
 
 // Parser schema
 export const ParserSchema = z.object({
-  spaceInQuotedTokens: z.boolean(),
-  hostCad: z.string(),
-  hostVersion: z.string(),
+  spaceInQuotedTokens: z.boolean().optional(),
+  hostCad: z.string().optional(),
+  hostVersion: z.string().optional(),
 })
 
 // Resolution schema
-export const ResolutionSchema = z.object({
-  unit: z.string(),
-  value: z.number(),
-})
+export const ResolutionSchema = z
+  .array(z.string())
+  .transform((a) => ({
+    unit: a[0],
+    value: parseFloat(a[1]!),
+  }))
+  .pipe(
+    z.object({
+      unit: z.string(),
+      value: z.number(),
+    })
+  )
 
 // Layer schema
 export const LayerSchema = z.object({
