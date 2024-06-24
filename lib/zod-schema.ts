@@ -11,9 +11,18 @@ export const YamlBool = z
 
 // Parser schema
 export const ParserSchema = z.object({
+  string_quote: z.string().optional(),
   space_in_quoted_tokens: YamlBool.optional(),
   host_cad: z.string().optional(),
   host_version: z.string().optional(),
+  constant: z.array(z.tuple([z.string(), z.string()])).optional(),
+  write_resolution: z.array(z.tuple([z.string(), z.number()])).optional(),
+  routes_include: z
+    .array(z.enum(["testpoint", "guides", "image_conductor"]))
+    .optional(),
+  wires_include: z.string().optional(),
+  case_sensitive: YamlBool.optional(),
+  rotate_first: YamlBool.optional(),
 })
 
 // Resolution schema
@@ -41,22 +50,24 @@ export const ResolutionSchema = z
 export const LayerSchema = z.object({
   name: z.string(),
   type: z.string(),
-  properties: z.array(
-    z.object({
-      index: z.number(),
-    })
-  ),
+  properties: z
+    .array(
+      z.object({
+        index: z.number(),
+      })
+    )
+    .optional(),
 })
 
 // Boundary schema
 export const BoundarySchema = z.object({
-  path: z.array(z.string()),
+  path: z.array(z.number()), // Coordinates as numbers
 })
 
 // Keepout schema
 export const KeepoutSchema = z.object({
   type: z.string(),
-  polygon: z.array(z.string()),
+  polygon: z.array(z.number()), // Coordinates as numbers
 })
 
 // Via schema
@@ -68,21 +79,23 @@ export const ViaSchema = z.object({
 // Rule schema
 export const RuleSchema = z.object({
   width: z.number(),
-  clearances: z.array(
-    z.object({
-      value: z.number(),
-      type: z.string().optional(),
-    })
-  ),
+  clearances: z
+    .array(
+      z.object({
+        value: z.number(),
+        type: z.string().optional(),
+      })
+    )
+    .optional(),
 })
 
 // Structure schema
 export const StructureSchema = z.object({
   layers: z.array(LayerSchema),
   boundary: BoundarySchema,
-  keepout: KeepoutSchema,
+  keepout: KeepoutSchema.optional(),
   vias: z.array(ViaSchema),
-  rules: z.array(RuleSchema),
+  rules: z.array(RuleSchema).optional(),
 })
 
 // Placement schema
@@ -107,21 +120,25 @@ export const PlacementSchema = z.object({
 // Image schema
 export const ImageSchema = z.object({
   name: z.string(),
-  outlines: z.array(
-    z.object({
-      signal: z.string(),
-      path: z.array(z.string()),
-    })
-  ),
-  pins: z.array(
-    z.object({
-      shape: z.string(),
-      rotate: z.number().optional(),
-      name: z.string(),
-      x: z.number(),
-      y: z.number(),
-    })
-  ),
+  outlines: z
+    .array(
+      z.object({
+        signal: z.string(),
+        path: z.array(z.number()), // Coordinates as numbers
+      })
+    )
+    .optional(),
+  pins: z
+    .array(
+      z.object({
+        shape: z.string(),
+        rotate: z.number().optional(),
+        name: z.string(),
+        x: z.number(),
+        y: z.number(),
+      })
+    )
+    .optional(),
 })
 
 // Padstack schema
@@ -134,7 +151,7 @@ export const PadstackSchema = z.object({
       dimensions: z.array(z.number()),
     })
   ),
-  attach: z.string(),
+  attach: z.string().optional(),
 })
 
 // Library schema
@@ -152,28 +169,53 @@ export const NetSchema = z.object({
 // Network schema
 export const NetworkSchema = z.object({
   nets: z.array(NetSchema),
+  classes: z
+    .array(
+      z.object({
+        class_id: z.string(),
+        nets: z.array(z.string()),
+      })
+    )
+    .optional(),
+  groups: z
+    .array(
+      z.object({
+        group_id: z.string(),
+        fromtos: z
+          .array(
+            z.object({
+              from: z.string(),
+              to: z.string(),
+            })
+          )
+          .optional(),
+      })
+    )
+    .optional(),
 })
 
 // Wire schema
 export const WireSchema = z.object({
   layer: z.string(),
-  path: z.array(z.string()),
+  path: z.array(z.number()), // Coordinates as numbers
   net: z.string(),
-  type: z.string(),
+  type: z.string().optional(),
 })
 
 // Wiring schema
 export const WiringSchema = z.object({
   wires: z.array(WireSchema),
-  vias: z.array(
-    z.object({
-      name: z.string(),
-      net: z.string(),
-      type: z.string(),
-      x: z.number(),
-      y: z.number(),
-    })
-  ),
+  vias: z
+    .array(
+      z.object({
+        name: z.string(),
+        net: z.string(),
+        type: z.string(),
+        x: z.number(),
+        y: z.number(),
+      })
+    )
+    .optional(),
 })
 
 // Main PCB Design schema
