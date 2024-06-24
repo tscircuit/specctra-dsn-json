@@ -35,6 +35,9 @@ function parsePCBDesign(sexprRoot: any[]): any {
 
   const [pcbLiteral, filePath, ...sexprMainContent] = sexprRoot
 
+  result.pcb = pcbLiteral
+  result.file = filePath
+
   sexprMainContent.forEach(([key, ...values]) => {
     switch (key) {
       case "parser":
@@ -42,6 +45,9 @@ function parsePCBDesign(sexprRoot: any[]): any {
         break
       case "resolution":
         result.resolution = parseObject(ResolutionSchema, values)
+        break
+      case "unit":
+        result.unit = values[0]
         break
       // case "structure":
       //   result.structure = parseObject(StructureSchema, values)
@@ -73,11 +79,13 @@ function parseObject(schema: any, arrayData: any[]): any {
   if (typeof arrayData[0] === "string" || typeof arrayData[0] === "number") {
     return schema.parse(arrayData)
   } else if (schema instanceof z.ZodObject) {
-    arrayData.forEach(([key, value]) => {
+    arrayData.forEach(([key, ...values]) => {
       result[key] =
-        Array.isArray(value) && value.every(Array.isArray)
-          ? value.map((v) => parseObject(schema.shape[key], v))
-          : value
+        Array.isArray(values) && values.every(Array.isArray)
+          ? values.map((v) => parseObject(schema.shape[key], v))
+          : values.length > 1
+          ? values
+          : values[0]
     })
   }
 
