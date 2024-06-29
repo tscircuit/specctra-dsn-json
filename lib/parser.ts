@@ -184,6 +184,17 @@ function parseStructure(elements: any[]): any {
       }
 
       parsed[key].push(keepoutObj)
+    } else if (key === "via") {
+      const primaryPadstack = value[0]
+      const sparePadstacks = value.slice(1)
+
+      const viaObj = {
+        type: "via",
+        primary_padstack: primaryPadstack,
+        spare_padstacks: sparePadstacks,
+      }
+
+      parsed[key] = viaObj
     } else if (Array.isArray(value[0])) {
       if (!parsed[key]) {
         parsed[key] = []
@@ -406,7 +417,13 @@ const exampleDsn = [
         "-184623",
       ],
     ],
-    // ["via", "Via[0-1]_600:400_um", "Via[0-1]_1016:485.7_um"],
+    [
+      "via",
+      "Via[0-1]_800:400_um",
+      "Via[0-1]_800:400_um",
+      "Via[0-1]_800:400_um",
+      "Via[0-1]_800:400_um",
+    ],
     // [
     //   "rule",
     //   ["width", "250"],
