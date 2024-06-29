@@ -195,6 +195,24 @@ function parseStructure(elements: any[]): any {
       }
 
       parsed[key] = viaObj
+    } else if (key === "rule") {
+      const ruleObj: any = { type: "rule" }
+      const clearances: any = []
+
+      value.forEach((v: any) => {
+        if (v[0] === "width") {
+          ruleObj.width = parseFloat(v[1])
+        } else if (v[0] === "clearance" || v[0] === "clear") {
+          const clearanceObj: any = { value: parseFloat(v[1]) }
+          if (v.length > 2 && v[2][0] === "type") {
+            clearanceObj.type = v[2][1]
+          }
+          clearances.push(clearanceObj)
+        }
+      })
+
+      ruleObj.clearances = clearances
+      parsed[key] = ruleObj
     } else if (Array.isArray(value[0])) {
       if (!parsed[key]) {
         parsed[key] = []
@@ -424,13 +442,13 @@ const exampleDsn = [
       "Via[0-1]_800:400_um",
       "Via[0-1]_800:400_um",
     ],
-    // [
-    //   "rule",
-    //   ["width", "250"],
-    //   ["clearance", "200.1"],
-    //   ["clearance", "200.1", ["type", "default_smd"]],
-    //   ["clearance", "50", ["type", "smd_smd"]],
-    // ],
+    [
+      "rule",
+      ["width", "250"],
+      ["clearance", "200.1"],
+      ["clearance", "200.1", ["type", "default_smd"]],
+      ["clearance", "50", ["type", "smd_smd"]],
+    ],
   ],
 ]
 
