@@ -147,7 +147,14 @@ function parseStructure(elements: any[]): any {
       let shape = {}
       let rule = {}
 
-      value.forEach((v: any) => {
+      let keepoutDetails = value
+      if (typeof keepoutDetails[0] === "string") {
+        keepoutObj.id = keepoutDetails[0]
+
+        keepoutDetails = keepoutDetails.slice(1)
+      }
+
+      keepoutDetails.forEach((v: any) => {
         if (v[0] === "polygon") {
           const shapeType = v[0]
           const shapeLayer = v[1]
