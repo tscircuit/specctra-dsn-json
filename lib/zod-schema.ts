@@ -48,7 +48,7 @@ export const keepoutSchema = z.object({
   shape: z.object({
     type: z.enum(["polygon", "rect", "circle"]),
     layer: z.string(),
-    aperture_width: z.number(),
+    aperture_width: z.number().optional(),
     vertices: z.array(z.tuple([z.number(), z.number()])),
   }),
   clearance_class: z.string().optional(),

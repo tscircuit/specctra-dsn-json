@@ -34,7 +34,7 @@ export const parseDsnToJson = (dsn: string) => {
       input = expr
 
       for (const el of expr.slice(1)) {
-        const subEl = "autoroute_settings"
+        const subEl = "keepout"
         if (el[0] === subEl) {
           if (!objectMap[subEl]) {
             objectMap[subEl] = []
