@@ -5,177 +5,207 @@ export function parseSexprStructure(elements: any[]): any {
     const key = element[0]
     const value = element.slice(1)
 
-    if (key === "layer") {
-      const name = value[0]
-      const rest = value.slice(1)
-
-      if (!parsed[key]) {
-        parsed[key] = []
-      }
-
-      const layerObj = parseSexprStructure(rest)
-      parsed[key].push({ name, ...layerObj })
-    } else if (key === "property" && Array.isArray(value[0])) {
-      const propertyName = value[0][0]
-      const propertyValue = value[0][1]
-      parsed[key] = { name: propertyName, value: propertyValue }
-    } else if (key === "boundary") {
-      if (!parsed[key]) {
-        parsed[key] = []
-      }
-
-      const boundaryType = value[0][0]
-      const boundaryLayer = value[0][1]
-      const rest = value[0].slice(2)
-
-      let boundaryWidth
-      let coordinatesStartIndex = 0
-
-      if (rest.length % 2 !== 0) {
-        // If odd number of remaining elements, the third element is width
-        boundaryWidth = parseFloat(rest[0])
-        coordinatesStartIndex = 1
-      }
-
-      const boundaryValues = rest.slice(coordinatesStartIndex)
-      const coordinates = []
-
-      for (let i = 0; i < boundaryValues.length; i += 2) {
-        coordinates.push({
-          x: parseFloat(boundaryValues[i]),
-          y: parseFloat(boundaryValues[i + 1]),
-        })
-      }
-
-      const boundaryObject: any = {
-        type: boundaryType,
-        layer: boundaryLayer,
-        coordinates: coordinates,
-      }
-
-      if (boundaryWidth !== undefined) {
-        boundaryObject.width = boundaryWidth
-      }
-
-      parsed[key].push(boundaryObject)
-    } else if (key === "keepout") {
-      if (!parsed[key]) {
-        parsed[key] = []
-      }
-
-      const keepoutObj: any = { type: "keepout" }
-      let shape = {}
-      let rule = {}
-
-      let keepoutDetails = value
-      if (typeof keepoutDetails[0] === "string") {
-        keepoutObj.id = keepoutDetails[0]
-
-        keepoutDetails = keepoutDetails.slice(1)
-      }
-
-      keepoutDetails.forEach((v: any) => {
-        if (v[0] === "polygon") {
-          const shapeType = v[0]
-          const shapeLayer = v[1]
-          const apertureWidth = v[2]
-          const vertices = []
-          for (let i = 3; i < v.length; i += 2) {
-            vertices.push([parseFloat(v[i]), parseFloat(v[i + 1])])
-          }
-
-          shape = {
-            type: shapeType,
-            layer: shapeLayer,
-            aperture_width: apertureWidth,
-            vertices: vertices,
-          }
-        } else if (v[0] === "clearance_class") {
-          rule = {
-            type: "clearance_class",
-            value: v[1],
-          }
+    switch (key) {
+      case "layer":
+        if (!parsed[key]) {
+          parsed[key] = []
         }
-      })
-
-      keepoutObj.shape = shape
-      if (Object.keys(rule).length > 0) {
-        keepoutObj.rule = rule
-      }
-
-      parsed[key].push(keepoutObj)
-    } else if (key === "via") {
-      const primaryPadstack = value[0]
-      const sparePadstacks = value.slice(1)
-
-      const viaObj = {
-        type: "via",
-        primary_padstack: primaryPadstack,
-        spare_padstacks: sparePadstacks,
-      }
-
-      parsed[key] = viaObj
-    } else if (key === "rule") {
-      const ruleObj: any = { type: "rule" }
-      const clearances: any = []
-
-      value.forEach((v: any) => {
-        if (v[0] === "width") {
-          ruleObj.width = parseFloat(v[1])
-        } else if (v[0] === "clearance" || v[0] === "clear") {
-          const clearanceObj: any = { value: parseFloat(v[1]) }
-          if (v.length > 2 && v[2][0] === "type") {
-            clearanceObj.type = v[2][1]
-          }
-          clearances.push(clearanceObj)
+        parsed[key].push(parseLayer(value))
+        break
+      case "boundary":
+        if (!parsed[key]) {
+          parsed[key] = []
         }
-      })
-
-      ruleObj.clearances = clearances
-      parsed[key] = ruleObj
-    } else if (key === "control") {
-      const controlObj: any = { type: "control" }
-
-      value.forEach((v: any) => {
-        controlObj[v[0]] = v[1]
-      })
-
-      parsed["control"] = controlObj
-    } else if (key === "autoroute_settings") {
-      const settings: any = {}
-      let layerRules: any = []
-
-      value.forEach((v: any) => {
-        if (v[0] === "layer_rule") {
-          const layerRule: any = { name: v[1] }
-          v.slice(2).forEach((setting: any) => {
-            layerRule[setting[0]] = setting[1]
-          })
-          layerRules.push(layerRule)
+        parsed[key].push(parseBoundary(value[0]))
+        break
+      case "keepout":
+        if (!parsed[key]) {
+          parsed[key] = []
+        }
+        parsed[key].push(parseKeepout(value))
+        break
+      case "via":
+        parsed[key] = parseVia(value)
+        break
+      case "rule":
+        if (!parsed[key]) {
+          parsed[key] = []
+        }
+        parsed[key].push(parseRule(value))
+        break
+      case "control":
+        parsed[key] = parseControl(value)
+        break
+      case "autoroute_settings":
+        parsed[key] = parseAutorouteSettings(value)
+        break
+      case "snap_angle":
+        parsed[key] = value[0]
+        break
+      default:
+        if (Array.isArray(value[0])) {
+          if (!parsed[key]) {
+            parsed[key] = []
+          }
+          parsed[key].push(parseSexprStructure(value))
         } else {
-          settings[v[0]] = isNaN(v[1]) ? v[1] : parseFloat(v[1])
+          parsed[key] = value.length === 1 ? value[0] : value
         }
-      })
-
-      if (layerRules.length > 0) {
-        settings.layer_rules = layerRules
-      }
-
-      const autorouteSettingsObj = {
-        type: "autoroute_settings",
-        settings: settings,
-      }
-
-      parsed[key] = autorouteSettingsObj
-    } else if (Array.isArray(value[0])) {
-      if (!parsed[key]) {
-        parsed[key] = []
-      }
-      parsed[key].push(parseSexprStructure(value))
-    } else {
-      parsed[key] = value.length === 1 ? value[0] : value
     }
   })
 
   return parsed
+}
+
+function parseLayer(value: any[]): any {
+  const name = value[0]
+  const layerObj: any = { name }
+
+  value.slice(1).forEach((prop) => {
+    if (prop[0] === "type") {
+      layerObj.type = prop[1]
+    } else if (prop[0] === "property") {
+      if (!layerObj.properties) {
+        layerObj.properties = {}
+      }
+      layerObj.properties[prop[1][0]] = prop[1][1]
+    }
+  })
+
+  return layerObj
+}
+
+function parseBoundary(value: any[]): any {
+  const boundaryType = value[0]
+  const boundaryLayer = value[1]
+  const rest = value.slice(2)
+
+  let boundaryWidth
+  let coordinatesStartIndex = 0
+
+  if (rest.length % 2 !== 0) {
+    boundaryWidth = parseFloat(rest[0])
+    coordinatesStartIndex = 1
+  }
+
+  const boundaryValues = rest.slice(coordinatesStartIndex)
+  const coordinates = []
+
+  for (let i = 0; i < boundaryValues.length; i += 2) {
+    coordinates.push({
+      x: parseFloat(boundaryValues[i]),
+      y: parseFloat(boundaryValues[i + 1]),
+    })
+  }
+
+  const boundaryObject: any = {
+    type: boundaryType,
+    layer: boundaryLayer,
+    coordinates: coordinates,
+  }
+
+  if (boundaryWidth !== undefined) {
+    boundaryObject.width = boundaryWidth
+  }
+
+  return boundaryObject
+}
+
+function parseKeepout(value: any[]): any {
+  const keepoutObj: any = { type: "keepout" }
+
+  if (typeof value[0] === "string") {
+    keepoutObj.id = value[0]
+    value = value.slice(1)
+  }
+
+  value.forEach((v: any) => {
+    if (v[0] === "polygon") {
+      keepoutObj.shape = {
+        type: v[0],
+        layer: v[1],
+        aperture_width: parseFloat(v[2]),
+        vertices: v
+          .slice(3)
+          .map((coord: string, index: number) =>
+            index % 2 === 0
+              ? { x: parseFloat(coord) }
+              : { y: parseFloat(coord) }
+          )
+          .reduce((acc: any[], curr: any, index: number) => {
+            if (index % 2 === 0) {
+              acc.push(curr)
+            } else {
+              Object.assign(acc[acc.length - 1], curr)
+            }
+            return acc
+          }, []),
+      }
+    } else if (v[0] === "clearance_class") {
+      keepoutObj.clearance_class = v[1]
+    }
+  })
+
+  return keepoutObj
+}
+
+function parseVia(value: any[]): any {
+  return {
+    primary_padstack: value[0],
+    spare_padstacks: value.slice(1),
+  }
+}
+
+function parseRule(value: any[]): any {
+  const ruleObj: any = {}
+
+  value.forEach((v: any) => {
+    if (v[0] === "width") {
+      ruleObj.width = parseFloat(v[1])
+    } else if (v[0] === "clearance" || v[0] === "clear") {
+      if (!ruleObj.clearances) {
+        ruleObj.clearances = []
+      }
+      const clearanceObj: any = { value: parseFloat(v[1]) }
+      if (v.length > 2 && v[2][0] === "type") {
+        clearanceObj.type = v[2][1]
+      }
+      ruleObj.clearances.push(clearanceObj)
+    }
+  })
+
+  return ruleObj
+}
+
+function parseControl(value: any[]): any {
+  const controlObj: any = {}
+
+  value.forEach((v: any) => {
+    controlObj[v[0]] = v[1]
+  })
+
+  return controlObj
+}
+
+function parseAutorouteSettings(value: any[]): any {
+  const settings: any = {}
+  const layerRules: any[] = []
+
+  value.forEach((v: any) => {
+    if (v[0] === "layer_rule") {
+      const layerRule: any = { name: v[1] }
+      v.slice(2).forEach((setting: any) => {
+        layerRule[setting[0]] = setting[1]
+      })
+      layerRules.push(layerRule)
+    } else {
+      settings[v[0]] = isNaN(v[1]) ? v[1] : parseFloat(v[1])
+    }
+  })
+
+  if (layerRules.length > 0) {
+    settings.layer_rules = layerRules
+  }
+
+  return settings
 }
