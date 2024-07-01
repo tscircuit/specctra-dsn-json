@@ -7,20 +7,25 @@ interface ParsedElement {
   resolution?: Resolution
   unit?: Unit
   structure?: any
+  placement?: any
+  library?: any
+  network?: any
+  wiring?: any
 }
 
 export interface Parser {
-  space_in_quoted_tokens?: string
+  space_in_quoted_tokens?: boolean
   host_cad?: string
   host_version?: string
   constant?: {
     [key: string]: string
   }
+  generated_by_freeroute?: boolean
 }
 
 interface Resolution {
   unit: string
-  value: string
+  value: number
 }
 
 type Unit = string
@@ -39,7 +44,7 @@ function parseSexpElement(sexp: any[]): ParsedElement {
       case "resolution":
         parsedElement.resolution = {
           unit: element[1],
-          value: element[2],
+          value: parseFloat(element[2]),
         }
         break
       case "unit":
@@ -47,6 +52,18 @@ function parseSexpElement(sexp: any[]): ParsedElement {
         break
       case "structure":
         parsedElement.structure = parseSexprStructure(element.slice(1))
+        break
+      case "placement":
+        parsedElement.placement = parseSexprPlacement(element.slice(1))
+        break
+      case "library":
+        parsedElement.library = parseSexprLibrary(element.slice(1))
+        break
+      case "network":
+        parsedElement.network = parseSexprNetwork(element.slice(1))
+        break
+      case "wiring":
+        parsedElement.wiring = parseSexprWiring(element.slice(1))
         break
       default:
         const value = element.slice(1)
@@ -57,6 +74,26 @@ function parseSexpElement(sexp: any[]): ParsedElement {
   })
 
   return parsedElement
+}
+
+function parseSexprPlacement(elements: any[]): any {
+  // Implement placement parsing logic
+  return {}
+}
+
+function parseSexprLibrary(elements: any[]): any {
+  // Implement library parsing logic
+  return {}
+}
+
+function parseSexprNetwork(elements: any[]): any {
+  // Implement network parsing logic
+  return {}
+}
+
+function parseSexprWiring(elements: any[]): any {
+  // Implement wiring parsing logic
+  return {}
 }
 
 const exampleDsn = [
