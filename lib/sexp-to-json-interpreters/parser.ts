@@ -1,26 +1,26 @@
 import { parseOnOffValue } from "."
-import type { Parser } from "lib/types"
+import type { Parser } from "../types"
 import { parserSchema } from "../zod-schema"
 
-export function parseSexprParser(element: any[]): Parser {
-  const parserElement: Parser = {}
+export function parseSexprParser(elements: any[]): Parser {
+  const parserElement: Partial<Parser> = {}
 
-  element.forEach((e) => {
-    switch (e[0]) {
+  elements.forEach(([key, ...values]) => {
+    switch (key) {
       case "space_in_quoted_tokens":
-        parserElement.space_in_quoted_tokens = parseOnOffValue(e[1])
+        parserElement.space_in_quoted_tokens = parseOnOffValue(values[0])
         break
       case "host_cad":
-        parserElement.host_cad = e[1]
+        parserElement.host_cad = values[0]
         break
       case "host_version":
-        parserElement.host_version = e[1]
+        parserElement.host_version = values[0]
         break
       case "constant":
-        if (!parserElement.constant) {
-          parserElement.constant = {}
+        parserElement.constant = {
+          ...(parserElement.constant || {}),
+          [values[0][0]]: values[0][1],
         }
-        parserElement.constant[e[1][0]] = e[1][1]
         break
       case "generated_by_freeroute":
         parserElement.generated_by_freeroute = true
