@@ -1,84 +1,69 @@
 import { z } from "zod"
 
-export const YamlBool = z
-  .enum(["true", "false", "yes", "no", "on", "off"])
-  .or(z.boolean())
-  .transform((v) => {
-    if (typeof v === "boolean") return v
-    if (v === "true" || v === "yes" || v === "on") return true
-    return false
-  })
-
 // Parser schema
-export const ParserSchema = z.object({
-  string_quote: z.string().optional(),
-  space_in_quoted_tokens: YamlBool.optional(),
+export const parserSchema = z.object({
+  space_in_quoted_tokens: z.boolean().optional(),
   host_cad: z.string().optional(),
   host_version: z.string().optional(),
-  constant: z.array(z.tuple([z.string(), z.string()])).optional(),
+  constant: z.record(z.string(), z.string()).optional(),
   write_resolution: z.array(z.tuple([z.string(), z.number()])).optional(),
   routes_include: z
     .array(z.enum(["testpoint", "guides", "image_conductor"]))
     .optional(),
   wires_include: z.string().optional(),
-  case_sensitive: YamlBool.optional(),
-  rotate_first: YamlBool.optional(),
+  case_sensitive: z.boolean().optional(),
+  rotate_first: z.boolean().optional(),
+  generated_by_freeroute: z.boolean().optional(),
 })
 
 // Resolution schema
-export const ResolutionSchema = z
-  .array(z.string())
-  .or(z.record(z.string(), z.any()))
-  .transform((a: any) => {
-    if (Array.isArray(a)) {
-      return {
-        unit: a[0],
-        value: parseFloat(a[1]!),
-      }
-    } else {
-      return a
-    }
-  })
-  .pipe(
-    z.object({
-      unit: z.string(),
-      value: z.number(),
-    })
-  )
+export const resolutionSchema = z.object({
+  unit: z.string(),
+  value: z.number(),
+})
 
 // Layer schema
-export const LayerSchema = z.object({
+export const layerSchema = z.object({
   name: z.string(),
   type: z.string(),
   properties: z
-    .array(
-      z.object({
-        index: z.number(),
-      })
-    )
+    .record(z.string(), z.union([z.string(), z.number()]))
     .optional(),
+  direction: z.enum(["horizontal", "vertical"]).optional(),
+  cost: z.number().optional(),
 })
 
 // Boundary schema
-export const BoundarySchema = z.object({
-  path: z.array(z.number()), // Coordinates as numbers
+export const boundarySchema = z.object({
+  type: z.enum(["path", "rect", "circle"]),
+  layer: z.string(),
+  width: z.number().optional(),
+  coordinates: z.array(z.tuple([z.number(), z.number()])),
 })
 
 // Keepout schema
-export const KeepoutSchema = z.object({
-  type: z.string(),
-  polygon: z.array(z.number()), // Coordinates as numbers
+export const keepoutSchema = z.object({
+  type: z.literal("keepout"),
+  id: z.string().optional(),
+  shape: z.object({
+    type: z.enum(["polygon", "rect", "circle"]),
+    layer: z.string(),
+    aperture_width: z.number(),
+    vertices: z.array(z.tuple([z.number(), z.number()])),
+  }),
+  clearance_class: z.string().optional(),
 })
 
 // Via schema
-export const ViaSchema = z.object({
-  name: z.string(),
-  types: z.array(z.string()),
+export const viaSchema = z.object({
+  primary_padstack: z.string(),
+  spare_padstacks: z.array(z.string()),
 })
 
 // Rule schema
-export const RuleSchema = z.object({
-  width: z.number(),
+export const ruleSchema = z.object({
+  name: z.string().optional(),
+  width: z.number().optional(),
   clearances: z
     .array(
       z.object({
@@ -87,44 +72,85 @@ export const RuleSchema = z.object({
       })
     )
     .optional(),
+  length: z
+    .object({
+      min: z.number(),
+      max: z.number(),
+    })
+    .optional(),
+  via_costs: z.number().optional(),
+  layer_change_costs: z.number().optional(),
+})
+
+// Control schema
+export const controlSchema = z.object({
+  via_at_smd: z.boolean().optional(),
+  off_grid_wires: z.boolean().optional(),
+  ignore_conduction: z.boolean().optional(),
+  fanout_direction: z.enum(["clockwise", "counterclockwise"]).optional(),
+})
+
+// Autoroute settings schema
+export const autorouteSettingsSchema = z.object({
+  fanout: z.union([z.string(), z.boolean()]),
+  autoroute: z.union([z.string(), z.boolean()]),
+  postroute: z.union([z.string(), z.boolean()]),
+  vias: z.union([z.string(), z.boolean()]),
+  via_costs: z.number(),
+  plane_via_costs: z.number(),
+  start_ripup_costs: z.number(),
+  start_pass_no: z.number(),
+  layer_rule: z.array(
+    z.object({
+      name: z.string(),
+      active: z.union([z.string(), z.boolean()]),
+      preferred_direction: z.enum(["horizontal", "vertical"]),
+      preferred_direction_trace_costs: z.number(),
+      against_preferred_direction_trace_costs: z.number(),
+    })
+  ),
 })
 
 // Structure schema
-export const StructureSchema = z.object({
-  layers: z.array(LayerSchema),
-  boundary: BoundarySchema,
-  keepout: KeepoutSchema.optional(),
-  vias: z.array(ViaSchema),
-  rules: z.array(RuleSchema).optional(),
+export const structureSchema = z.object({
+  layer: z.array(layerSchema),
+  boundary: z.array(boundarySchema),
+  keepout: z.array(keepoutSchema).optional(),
+  via: z.array(viaSchema),
+  rule: z.array(ruleSchema),
+  snap_angle: z.enum(["fortyfive_degree", "ninety_degree"]),
+  control: controlSchema,
+  autoroute_settings: autorouteSettingsSchema,
+})
+
+// Component placement schema
+const ComponentPlaceSchema = z.object({
+  reference: z.string(),
+  x: z.number(),
+  y: z.number(),
+  side: z.enum(["front", "back"]),
+  rotation: z.number(),
+  partNumber: z.string(),
 })
 
 // Placement schema
-export const PlacementSchema = z.object({
+export const placementSchema = z.object({
   components: z.array(
     z.object({
       name: z.string(),
-      places: z.array(
-        z.object({
-          reference: z.string(),
-          x: z.number(),
-          y: z.number(),
-          side: z.string(),
-          rotation: z.number(),
-          partNumber: z.string(),
-        })
-      ),
+      places: z.array(ComponentPlaceSchema),
     })
   ),
 })
 
 // Image schema
-export const ImageSchema = z.object({
+export const imageSchema = z.object({
   name: z.string(),
   outlines: z
     .array(
       z.object({
         signal: z.string(),
-        path: z.array(z.number()), // Coordinates as numbers
+        path: z.array(z.number()),
       })
     )
     .optional(),
@@ -142,7 +168,7 @@ export const ImageSchema = z.object({
 })
 
 // Padstack schema
-export const PadstackSchema = z.object({
+export const padstackSchema = z.object({
   name: z.string(),
   shapes: z.array(
     z.object({
@@ -155,56 +181,53 @@ export const PadstackSchema = z.object({
 })
 
 // Library schema
-export const LibrarySchema = z.object({
-  images: z.array(ImageSchema),
-  padstacks: z.array(PadstackSchema),
+export const librarySchema = z.object({
+  images: z.array(imageSchema),
+  padstacks: z.array(padstackSchema),
 })
 
 // Net schema
-export const NetSchema = z.object({
+export const netSchema = z.object({
   name: z.string(),
   pins: z.array(z.string()),
 })
 
+// Net class schema
+export const netClassSchema = z.object({
+  name: z.string(),
+  nets: z.array(z.string()),
+})
+
+// Net connection schema
+export const netConnectionSchema = z.object({
+  name: z.string(),
+  fromtos: z.array(
+    z.object({
+      from: z.string(),
+      to: z.string(),
+    })
+  ),
+})
+
 // Network schema
-export const NetworkSchema = z.object({
-  nets: z.array(NetSchema),
-  classes: z
-    .array(
-      z.object({
-        class_id: z.string(),
-        nets: z.array(z.string()),
-      })
-    )
-    .optional(),
-  groups: z
-    .array(
-      z.object({
-        group_id: z.string(),
-        fromtos: z
-          .array(
-            z.object({
-              from: z.string(),
-              to: z.string(),
-            })
-          )
-          .optional(),
-      })
-    )
-    .optional(),
+export const networkSchema = z.object({
+  nets: z.array(netSchema),
+  classes: z.array(netClassSchema).optional(),
+  connections: z.array(netConnectionSchema).optional(),
 })
 
 // Wire schema
-export const WireSchema = z.object({
+export const wireSchema = z.object({
   layer: z.string(),
-  path: z.array(z.number()), // Coordinates as numbers
+  path: z.array(z.number()),
   net: z.string(),
   type: z.string().optional(),
+  width: z.number().optional(),
 })
 
 // Wiring schema
-export const WiringSchema = z.object({
-  wires: z.array(WireSchema),
+export const wiringSchema = z.object({
+  wires: z.array(wireSchema),
   vias: z
     .array(
       z.object({
@@ -213,24 +236,22 @@ export const WiringSchema = z.object({
         type: z.string(),
         x: z.number(),
         y: z.number(),
+        padstack: z.string(),
       })
     )
     .optional(),
 })
 
 // Main PCB Design schema
-export const PCBDesignSchema = z
-  .object({
-    pcb: z.string(),
-    file: z.string(),
-    parser: ParserSchema,
-    resolution: ResolutionSchema,
-    unit: z.string(),
-    structure: StructureSchema,
-    placement: PlacementSchema,
-    library: LibrarySchema,
-    network: NetworkSchema,
-    wiring: WiringSchema,
-  })
-  // TEMPORARY partial(): until parser is totally complete TODO
-  .partial()
+export const pcbDesignSchema = z.object({
+  pcb: z.string(),
+  file: z.string(),
+  parser: parserSchema,
+  resolution: resolutionSchema,
+  unit: z.string(),
+  structure: structureSchema,
+  placement: placementSchema,
+  library: librarySchema,
+  network: networkSchema,
+  wiring: wiringSchema,
+})
