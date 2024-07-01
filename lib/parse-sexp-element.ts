@@ -282,6 +282,8 @@ const exampleDsn = [
       ["clearance", "200.1", ["type", "default_smd"]],
       ["clearance", "50", ["type", "smd_smd"]],
     ],
+    ["snap_angle", "fortyfive_degree"],
+    ["control", ["via_at_smd", "off"]],
   ],
 ]
 

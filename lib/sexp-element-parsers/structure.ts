@@ -133,6 +133,15 @@ export function parseSexprStructure(elements: any[]): any {
 
       ruleObj.clearances = clearances
       parsed[key] = ruleObj
+    } else if (key === "control") {
+      const controlObj: any = { type: "control" }
+
+      value.forEach((v: any) => {
+        controlObj[v[0]] = v[1]
+      })
+
+      parsed["control"] = controlObj
+    } else if (key === "autoroute_settings") {
     } else if (Array.isArray(value[0])) {
       if (!parsed[key]) {
         parsed[key] = []
