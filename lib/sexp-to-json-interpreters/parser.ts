@@ -1,5 +1,5 @@
-import type { Parser } from "lib/parse-sexp-element"
 import { parseOnOffValue } from "."
+import type { Parser } from "lib/types"
 
 export function parseSexprParser(element: any[]): Parser {
   const parserElement: Parser = {}

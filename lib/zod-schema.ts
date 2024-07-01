@@ -244,7 +244,7 @@ export const wiringSchema = z.object({
 
 // Main PCB Design schema
 export const pcbDesignSchema = z.object({
-  pcb: z.string(),
+  pcb_id: z.string(),
   file: z.string(),
   parser: parserSchema,
   resolution: resolutionSchema,

@@ -1,38 +1,17 @@
-import { parseSexprParser, parseSexprStructure } from "./sexp-element-parsers"
+import {
+  parseSexprLibrary,
+  parseSexprNetwork,
+  parseSexprParser,
+  parseSexprPlacement,
+  parseSexprStructure,
+  parseSexprWiring,
+} from "./sexp-to-json-interpreters"
+import type { PcbDesign } from "./types"
 
-interface ParsedElement {
-  pcb_id?: string
-  parser?: Parser
-  resolution?: Resolution
-  unit?: Unit
-  structure?: any
-  placement?: any
-  library?: any
-  network?: any
-  wiring?: any
-}
-
-export interface Parser {
-  space_in_quoted_tokens?: boolean
-  host_cad?: string
-  host_version?: string
-  constant?: {
-    [key: string]: string
-  }
-  generated_by_freeroute?: boolean
-}
-
-interface Resolution {
-  unit: string
-  value: number
-}
-
-type Unit = string
-
-function parseSexpElement(sexp: any[]): ParsedElement {
-  const parsedElement: ParsedElement = {
+function parseSexpElement(sexp: any[]): PcbDesign {
+  const parsedElement: PcbDesign = {
     pcb_id: sexp[1],
-  }
+  } as any
 
   sexp.slice(2).forEach((element) => {
     const elementType = element[0]
@@ -73,26 +52,6 @@ function parseSexpElement(sexp: any[]): ParsedElement {
   })
 
   return parsedElement
-}
-
-function parseSexprPlacement(elements: any[]): any {
-  // Implement placement parsing logic
-  return {}
-}
-
-function parseSexprLibrary(elements: any[]): any {
-  // Implement library parsing logic
-  return {}
-}
-
-function parseSexprNetwork(elements: any[]): any {
-  // Implement network parsing logic
-  return {}
-}
-
-function parseSexprWiring(elements: any[]): any {
-  // Implement wiring parsing logic
-  return {}
 }
 
 const exampleDsn = [

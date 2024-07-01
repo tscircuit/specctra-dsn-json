@@ -1,14 +1,14 @@
 import parseSExpression from "s-expression"
 import { replaceStringClassesDeep } from "./replaceStringClassesDeep"
 import {
-  LibrarySchema,
-  NetworkSchema,
-  PCBDesignSchema,
-  ParserSchema,
-  PlacementSchema,
-  ResolutionSchema,
-  StructureSchema,
-  WiringSchema,
+  librarySchema,
+  networkSchema,
+  pcbDesignSchema,
+  parserSchema,
+  placementSchema,
+  resolutionSchema,
+  structureSchema,
+  wiringSchema,
 } from "./zod-schema"
 import { z } from "zod"
 import { readFileSync, writeFileSync } from "fs"
@@ -67,28 +67,28 @@ function parsePCBDesign(sexprRoot: any[]): any {
   sexprMainContent.forEach(([key, ...values]) => {
     switch (key) {
       case "parser":
-        result.parser = parseObject(ParserSchema, values)
+        result.parser = parseObject(parserSchema, values)
         break
       case "resolution":
-        result.resolution = parseObject(ResolutionSchema, values)
+        result.resolution = parseObject(resolutionSchema, values)
         break
       case "unit":
         result.unit = values[0]
         break
       // case "structure":
-      //   result.structure = parseObject(StructureSchema, values)
+      //   result.structure = parseObject(structureSchema, values)
       //   break
       // case "placement":
-      //   result.placement = parseObject(PlacementSchema, values)
+      //   result.placement = parseObject(placementSchema, values)
       //   break
       // case "library":
-      //   result.library = parseObject(LibrarySchema, values)
+      //   result.library = parseObject(librarySchema, values)
       //   break
       // case "network":
-      //   result.network = parseObject(NetworkSchema, values)
+      //   result.network = parseObject(networkSchema, values)
       //   break
       // case "wiring":
-      //   result.wiring = parseObject(WiringSchema, values)
+      //   result.wiring = parseObject(wiringSchema, values)
       //   break
       default: {
         console.log(`WARN: ignoring key ${key}`)
@@ -96,7 +96,7 @@ function parsePCBDesign(sexprRoot: any[]): any {
     }
   })
 
-  return PCBDesignSchema.parse(result)
+  return pcbDesignSchema.parse(result)
 }
 
 function parseObject(schema: any, arrayData: any[]): any {
