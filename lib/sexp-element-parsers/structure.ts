@@ -89,13 +89,13 @@ function parseBoundary(value: any[]): any {
   }
 
   const boundaryValues = rest.slice(coordinatesStartIndex)
-  const coordinates = []
+  const coordinates: [number, number][] = []
 
   for (let i = 0; i < boundaryValues.length; i += 2) {
-    coordinates.push({
-      x: parseFloat(boundaryValues[i]),
-      y: parseFloat(boundaryValues[i + 1]),
-    })
+    coordinates.push([
+      parseFloat(boundaryValues[i]),
+      parseFloat(boundaryValues[i + 1]),
+    ])
   }
 
   const boundaryObject: any = {
@@ -121,22 +121,23 @@ function parseKeepout(value: any[]): any {
 
   value.forEach((v: any) => {
     if (v[0] === "polygon") {
+      const [type, layer, ...rest] = v
+      const hasApertureWidth = rest.length % 2 !== 0
+      const apertureWidth = hasApertureWidth ? parseFloat(rest[0]) : undefined
+      const verticesStart = hasApertureWidth ? 1 : 0
+
       keepoutObj.shape = {
-        type: v[0],
-        layer: v[1],
-        aperture_width: parseFloat(v[2]),
-        vertices: v
-          .slice(3)
-          .map((coord: string, index: number) =>
-            index % 2 === 0
-              ? { x: parseFloat(coord) }
-              : { y: parseFloat(coord) }
-          )
-          .reduce((acc: any[], curr: any, index: number) => {
+        type,
+        layer,
+        ...(apertureWidth !== undefined && { aperture_width: apertureWidth }),
+        vertices: rest
+          .slice(verticesStart)
+          .reduce((acc: [number, number][], curr: string, index: number) => {
             if (index % 2 === 0) {
-              acc.push(curr)
-            } else {
-              Object.assign(acc[acc.length - 1], curr)
+              acc.push([
+                parseFloat(curr),
+                parseFloat(rest[verticesStart + index + 1]),
+              ])
             }
             return acc
           }, []),
