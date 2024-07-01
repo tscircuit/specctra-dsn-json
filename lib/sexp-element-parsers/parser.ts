@@ -1,4 +1,5 @@
 import type { Parser } from "lib/parse-sexp-element"
+import { parseOnOffValue } from "."
 
 export function parseSexprParser(element: any[]): Parser {
   const parserElement: Parser = {}
@@ -6,7 +7,7 @@ export function parseSexprParser(element: any[]): Parser {
   element.forEach((e) => {
     switch (e[0]) {
       case "space_in_quoted_tokens":
-        parserElement.space_in_quoted_tokens = e[1] === "on"
+        parserElement.space_in_quoted_tokens = parseOnOffValue(e[1])
         break
       case "host_cad":
         parserElement.host_cad = e[1]

@@ -1,5 +1,4 @@
-import { parseSexprParser } from "./sexp-element-parsers/parser"
-import { parseSexprStructure } from "./sexp-element-parsers/structure"
+import { parseSexprParser, parseSexprStructure } from "./sexp-element-parsers"
 
 interface ParsedElement {
   pcb_id?: string

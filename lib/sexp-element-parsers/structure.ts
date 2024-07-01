@@ -1,3 +1,5 @@
+import { parseOnOffValue } from "."
+
 export function parseSexprStructure(elements: any[]): any {
   const parsed: any = {}
 
@@ -182,7 +184,7 @@ function parseControl(value: any[]): any {
   const controlObj: any = {}
 
   value.forEach((v: any) => {
-    controlObj[v[0]] = v[1]
+    controlObj[v[0]] = parseOnOffValue(v[1])
   })
 
   return controlObj
@@ -200,7 +202,7 @@ function parseAutorouteSettings(value: any[]): any {
       })
       layerRules.push(layerRule)
     } else {
-      settings[v[0]] = isNaN(v[1]) ? v[1] : parseFloat(v[1])
+      settings[v[0]] = isNaN(v[1]) ? parseOnOffValue(v[1]) : parseFloat(v[1])
     }
   })
 

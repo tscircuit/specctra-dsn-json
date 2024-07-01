@@ -11,6 +11,7 @@ import {
   WiringSchema,
 } from "./zod-schema"
 import { z } from "zod"
+import { readFileSync, writeFileSync } from "fs"
 
 export const parseDsnToJson = (dsn: string) => {
   // Many files feature a line that breaks the s-expression parser
@@ -25,9 +26,34 @@ export const parseDsnToJson = (dsn: string) => {
   // recursively replace String class instances with regular strings
   replaceStringClassesDeep(sexpr)
 
-  console.log(sexpr)
+  console.log(sexpr.slice(0, 7))
+  let input
+  let objectMap = {} as any
+  for (const expr of sexpr) {
+    if (expr[0] === "structure") {
+      input = expr
 
-  console.log(parsePCBDesign(sexpr))
+      for (const el of expr.slice(1)) {
+        const subEl = "autoroute_settings"
+        if (el[0] === subEl) {
+          if (!objectMap[subEl]) {
+            objectMap[subEl] = []
+          }
+
+          objectMap[subEl].push(el)
+        }
+      }
+    }
+  }
+
+  const output = JSON.parse(readFileSync("output.json", "utf-8"))
+
+  output.push(objectMap)
+
+  writeFileSync("output.json", JSON.stringify(output, null, 2))
+
+  // console.log(JSON.stringify(output, null, '  '))
+  // console.log(parsePCBDesign(sexpr))
 }
 
 function parsePCBDesign(sexprRoot: any[]): any {
