@@ -118,51 +118,15 @@ function parseBoundary(value: any[]): Boundary {
   return boundarySchema.parse(boundaryObject)
 }
 
-/*
-// input
-[
-    "keepout",
-    "",
-    [
-        "polygon",
-        "signal",
-        "0",
-        "19220",
-        "-19695",
-        "19220",
-        "-19695",
-        "19220",
-        "-19695"
-    ]
-]
-// output
-{
-    "type": "keepout",
-    "id": "",
-    "shape": {
-        "type": "polygon",
-        "layer": "signal",
-        "aperture_width": 0,
-        "vertices": [
-            [19220, -19695],
-            [19220, -19695],
-            [19220, -19695]
-        ]
-    }
-}
-*/
 function parseKeepout(value: any[]): Keepout {
   const keepoutObj: Partial<Keepout> = { type: "keepout" }
 
-  console.log("🚀 ~ value:", value)
   if (typeof value[0] === "string") {
     keepoutObj.id = value[0]
     value = value.slice(1)
   }
-  console.log("🚀 ~ value:", value)
 
   value.forEach((v: any) => {
-    console.log("🚀 ~ v:", v)
     const [key, ...rest] = v
     if (key === "polygon") {
       const [layer, ...vertices] = rest
