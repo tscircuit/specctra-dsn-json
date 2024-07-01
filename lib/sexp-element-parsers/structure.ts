@@ -142,6 +142,31 @@ export function parseSexprStructure(elements: any[]): any {
 
       parsed["control"] = controlObj
     } else if (key === "autoroute_settings") {
+      const settings: any = {}
+      let layerRules: any = []
+
+      value.forEach((v: any) => {
+        if (v[0] === "layer_rule") {
+          const layerRule: any = { name: v[1] }
+          v.slice(2).forEach((setting: any) => {
+            layerRule[setting[0]] = setting[1]
+          })
+          layerRules.push(layerRule)
+        } else {
+          settings[v[0]] = isNaN(v[1]) ? v[1] : parseFloat(v[1])
+        }
+      })
+
+      if (layerRules.length > 0) {
+        settings.layer_rules = layerRules
+      }
+
+      const autorouteSettingsObj = {
+        type: "autoroute_settings",
+        settings: settings,
+      }
+
+      parsed[key] = autorouteSettingsObj
     } else if (Array.isArray(value[0])) {
       if (!parsed[key]) {
         parsed[key] = []

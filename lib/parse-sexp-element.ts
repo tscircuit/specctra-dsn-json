@@ -284,6 +284,33 @@ const exampleDsn = [
     ],
     ["snap_angle", "fortyfive_degree"],
     ["control", ["via_at_smd", "off"]],
+    [
+      "autoroute_settings",
+      ["fanout", "off"],
+      ["autoroute", "on"],
+      ["postroute", "on"],
+      ["vias", "on"],
+      ["via_costs", "50"],
+      ["plane_via_costs", "5"],
+      ["start_ripup_costs", "100"],
+      ["start_pass_no", "1"],
+      [
+        "layer_rule",
+        "F.Cu",
+        ["active", "on"],
+        ["preferred_direction", "horizontal"],
+        ["preferred_direction_trace_costs", "1.0"],
+        ["against_preferred_direction_trace_costs", "2.5"],
+      ],
+      [
+        "layer_rule",
+        "B.Cu",
+        ["active", "on"],
+        ["preferred_direction", "vertical"],
+        ["preferred_direction_trace_costs", "1.0"],
+        ["against_preferred_direction_trace_costs", "1.7"],
+      ],
+    ],
   ],
 ]
 
