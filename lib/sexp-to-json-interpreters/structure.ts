@@ -1,4 +1,14 @@
 import { parseOnOffValue } from "."
+import {
+  structureSchema,
+  layerSchema,
+  boundarySchema,
+  keepoutSchema,
+  viaSchema,
+  ruleSchema,
+  controlSchema,
+  autorouteSettingsSchema,
+} from "../zod-schema"
 
 export function parseSexprStructure(elements: any[]): any {
   const parsed: any = {}
@@ -56,7 +66,7 @@ export function parseSexprStructure(elements: any[]): any {
     }
   })
 
-  return parsed
+  return structureSchema.parse(parsed)
 }
 
 function parseLayer(value: any[]): any {
@@ -74,7 +84,7 @@ function parseLayer(value: any[]): any {
     }
   })
 
-  return layerObj
+  return layerSchema.parse(layerObj)
 }
 
 function parseBoundary(value: any[]): any {
@@ -110,7 +120,7 @@ function parseBoundary(value: any[]): any {
     boundaryObject.width = boundaryWidth
   }
 
-  return boundaryObject
+  return boundarySchema.parse(boundaryObject)
 }
 
 function parseKeepout(value: any[]): any {
@@ -149,14 +159,15 @@ function parseKeepout(value: any[]): any {
     }
   })
 
-  return keepoutObj
+  return keepoutSchema.parse(keepoutObj)
 }
 
 function parseVia(value: any[]): any {
-  return {
+  const viaObj = {
     primary_padstack: value[0],
     spare_padstacks: value.slice(1),
   }
+  return viaSchema.parse(viaObj)
 }
 
 function parseRule(value: any[]): any {
@@ -177,7 +188,7 @@ function parseRule(value: any[]): any {
     }
   })
 
-  return ruleObj
+  return ruleSchema.parse(ruleObj)
 }
 
 function parseControl(value: any[]): any {
@@ -187,7 +198,7 @@ function parseControl(value: any[]): any {
     controlObj[v[0]] = parseOnOffValue(v[1])
   })
 
-  return controlObj
+  return controlSchema.parse(controlObj)
 }
 
 function parseAutorouteSettings(value: any[]): any {
@@ -198,7 +209,9 @@ function parseAutorouteSettings(value: any[]): any {
     if (v[0] === "layer_rule") {
       const layerRule: any = { name: v[1] }
       v.slice(2).forEach((setting: any) => {
-        layerRule[setting[0]] = setting[1]
+        layerRule[setting[0]] = isNaN(setting[1])
+          ? setting[1]
+          : parseFloat(setting[1])
       })
       layerRules.push(layerRule)
     } else {
@@ -207,8 +220,8 @@ function parseAutorouteSettings(value: any[]): any {
   })
 
   if (layerRules.length > 0) {
-    settings.layer_rules = layerRules
+    settings.layer_rule = layerRules
   }
 
-  return settings
+  return autorouteSettingsSchema.parse(settings)
 }

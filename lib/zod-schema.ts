@@ -116,7 +116,7 @@ export const structureSchema = z.object({
   layer: z.array(layerSchema),
   boundary: z.array(boundarySchema),
   keepout: z.array(keepoutSchema).optional(),
-  via: z.array(viaSchema),
+  via: viaSchema,
   rule: z.array(ruleSchema),
   snap_angle: z.enum(["fortyfive_degree", "ninety_degree"]),
   control: controlSchema,

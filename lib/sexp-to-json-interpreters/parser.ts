@@ -1,5 +1,6 @@
 import { parseOnOffValue } from "."
 import type { Parser } from "lib/types"
+import { parserSchema } from "../zod-schema"
 
 export function parseSexprParser(element: any[]): Parser {
   const parserElement: Parser = {}
@@ -27,5 +28,5 @@ export function parseSexprParser(element: any[]): Parser {
     }
   })
 
-  return parserElement
+  return parserSchema.parse(parserElement)
 }
