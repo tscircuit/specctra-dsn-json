@@ -130,17 +130,21 @@ export const placeSchema = z.object({
   side: z.enum(["front", "back"]),
   rotation: z.number(),
   part_number: z.string().optional(),
+  pins: z
+    .array(
+      z.object({
+        pin_id: z.string(),
+        clearance_class: z.string(),
+      })
+    )
+    .optional(),
 })
 
 // Placement schema
 export const placementSchema = z.array(
   z.object({
     component: z.string(),
-    placement_reference: z.array(
-      z.object({
-        place: placeSchema,
-      })
-    ),
+    place: placeSchema,
   })
 )
 
