@@ -250,5 +250,57 @@
         ["against_preferred_direction_trace_costs", "1.7"]
       ]
     ]
+  ],
+  [
+    "placement",
+    [
+      "component",
+      "Keebio-Parts:TRRS-PJ-320A-no-Fmask",
+      [
+        "place",
+        "J1",
+        "321419.000000",
+        "-155146.600000",
+        "front",
+        "90.000000",
+        ["PN", "4PIN"]
+      ]
+    ],
+    [
+      "component",
+      "SofleKeyboard-footprint:HOLE_M2_TH",
+      [
+        "place",
+        "TH7",
+        "336419.000000",
+        "-188496.600000",
+        "front",
+        "90.000000",
+        ["PN", "HOLE"]
+      ],
+      [
+        "place",
+        "TH14",
+        "283123.400000",
+        "-188656.000000",
+        "back",
+        "270.000000",
+        ["PN", "HOLE"]
+      ]
+    ],
+    [
+      "component",
+      "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm::2",
+      [
+        "place",
+        "C4",
+        "157750.0",
+        "-159550.0",
+        "front",
+        "270",
+        ["pin", "1", ["clearance_class", "Power"]],
+        ["pin", "2", ["clearance_class", "Power"]]
+      ]
+    ]
   ]
 ]
