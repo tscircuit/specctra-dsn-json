@@ -123,25 +123,26 @@ export const structureSchema = z.object({
   autoroute_settings: autorouteSettingsSchema,
 })
 
-// Component placement schema
-const ComponentPlaceSchema = z.object({
-  reference: z.string(),
-  x: z.number(),
-  y: z.number(),
+// Place schema
+export const placeSchema = z.object({
+  component_id: z.string(),
+  vertex: z.tuple([z.number(), z.number()]),
   side: z.enum(["front", "back"]),
   rotation: z.number(),
-  partNumber: z.string(),
+  part_number: z.string().optional(),
 })
 
 // Placement schema
-export const placementSchema = z.object({
-  components: z.array(
-    z.object({
-      name: z.string(),
-      places: z.array(ComponentPlaceSchema),
-    })
-  ),
-})
+export const placementSchema = z.array(
+  z.object({
+    component: z.string(),
+    placement_reference: z.array(
+      z.object({
+        place: placeSchema,
+      })
+    ),
+  })
+)
 
 // Image schema
 export const imageSchema = z.object({

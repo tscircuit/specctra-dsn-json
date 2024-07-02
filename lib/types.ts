@@ -12,6 +12,7 @@ import {
   controlSchema,
   autorouteSettingsSchema,
   placementSchema,
+  placeSchema,
   librarySchema,
   imageSchema,
   padstackSchema,
@@ -35,6 +36,7 @@ export type Rule = z.infer<typeof ruleSchema>
 export type Control = z.infer<typeof controlSchema>
 export type AutorouteSettings = z.infer<typeof autorouteSettingsSchema>
 export type Placement = z.infer<typeof placementSchema>
+export type Place = z.infer<typeof placeSchema>
 export type Library = z.infer<typeof librarySchema>
 export type Image = z.infer<typeof imageSchema>
 export type Padstack = z.infer<typeof padstackSchema>
