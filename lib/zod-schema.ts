@@ -1,5 +1,44 @@
 import { z } from "zod"
 
+// Common shape schemas
+const coordinatePair = z.tuple([z.number(), z.number()])
+const coordinateArray = z.array(coordinatePair)
+
+const baseShapeSchema = z.object({
+  layer: z.string(),
+  aperture_width: z.number().optional(),
+})
+
+export const circleSchema = baseShapeSchema.extend({
+  type: z.literal("circle"),
+  radius: z.number(),
+  x: z.number().optional(),
+  y: z.number().optional(),
+})
+
+const rectSchema = baseShapeSchema.extend({
+  type: z.literal("rect"),
+  coordinates: z.tuple([coordinatePair, coordinatePair]),
+})
+
+const pathSchema = baseShapeSchema.extend({
+  type: z.literal("path"),
+  width: z.number(),
+  coordinates: coordinateArray,
+})
+
+const polygonSchema = baseShapeSchema.extend({
+  type: z.literal("polygon"),
+  coordinates: coordinateArray,
+})
+
+export const shapeSchema = z.discriminatedUnion("type", [
+  circleSchema,
+  rectSchema,
+  pathSchema,
+  polygonSchema,
+])
+
 // Parser schema
 export const parserSchema = z.object({
   space_in_quoted_tokens: z.boolean().optional(),
@@ -34,23 +73,14 @@ export const layerSchema = z.object({
 })
 
 // Boundary schema
-export const boundarySchema = z.object({
-  type: z.enum(["path", "rect", "circle"]),
-  layer: z.string(),
-  width: z.number().optional(),
-  coordinates: z.array(z.tuple([z.number(), z.number()])),
-})
+export const boundarySchema = shapeSchema
 
 // Keepout schema
 export const keepoutSchema = z.object({
   type: z.literal("keepout"),
   id: z.string().optional(),
-  shape: z.object({
-    type: z.enum(["polygon", "rect", "circle"]),
-    layer: z.string(),
-    aperture_width: z.number().optional(),
-    vertices: z.array(z.tuple([z.number(), z.number()])),
-  }),
+  shape: shapeSchema,
+  aperture_width: z.number().optional(),
   clearance_class: z.string().optional(),
 })
 
@@ -123,11 +153,13 @@ export const structureSchema = z.object({
   autoroute_settings: autorouteSettingsSchema,
 })
 
+const sideSchema = z.enum(["front", "back"])
+
 // Place schema
 export const placeSchema = z.object({
   component_id: z.string(),
-  vertex: z.tuple([z.number(), z.number()]),
-  side: z.enum(["front", "back"]),
+  vertex: coordinatePair,
+  side: sideSchema,
   rotation: z.number(),
   part_number: z.string().optional(),
   pins: z
@@ -151,45 +183,41 @@ export const placementSchema = z.array(
 // Image schema
 export const imageSchema = z.object({
   name: z.string(),
-  outlines: z
-    .array(
-      z.object({
-        signal: z.string(),
-        path: z.array(z.number()),
-      })
-    )
-    .optional(),
+  outlines: z.array(shapeSchema).optional(),
   pins: z
     .array(
       z.object({
-        shape: z.string(),
-        rotate: z.number().optional(),
-        name: z.string(),
+        type: z.string(),
+        id: z.string(),
         x: z.number(),
         y: z.number(),
+        rotate: z.number().optional(),
       })
     )
     .optional(),
+  keepouts: z.array(keepoutSchema).optional(),
+  side: sideSchema.optional(),
 })
 
 // Padstack schema
 export const padstackSchema = z.object({
   name: z.string(),
-  shapes: z.array(
-    z.object({
-      type: z.string(),
-      layer: z.string(),
-      dimensions: z.array(z.number()),
-    })
-  ),
+  shapes: z.array(shapeSchema),
   attach: z.string().optional(),
 })
 
 // Library schema
-export const librarySchema = z.object({
-  images: z.array(imageSchema),
-  padstacks: z.array(padstackSchema),
-})
+export const librarySchema = z.array(
+  z
+    .object({
+      image: imageSchema,
+    })
+    .or(
+      z.object({
+        padstack: padstackSchema,
+      })
+    )
+)
 
 // Net schema
 export const netSchema = z.object({

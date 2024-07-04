@@ -22,6 +22,8 @@ import {
   netConnectionSchema,
   wiringSchema,
   wireSchema,
+  shapeSchema,
+  circleSchema
 } from "./zod-schema"
 
 export type PcbDesign = z.infer<typeof pcbDesignSchema>
@@ -46,3 +48,5 @@ export type NetClass = z.infer<typeof netClassSchema>
 export type NetConnection = z.infer<typeof netConnectionSchema>
 export type Wiring = z.infer<typeof wiringSchema>
 export type Wire = z.infer<typeof wireSchema>
+export type Shape = z.infer<typeof shapeSchema>
+export type Circle = z.infer<typeof circleSchema>
