@@ -3,7 +3,6 @@ import {
   structureSchema,
   layerSchema,
   boundarySchema,
-  keepoutSchema,
   viaSchema,
   ruleSchema,
   controlSchema,
@@ -13,12 +12,12 @@ import type {
   Structure,
   Layer,
   Boundary,
-  Keepout,
   Via,
   Rule,
   Control,
   AutorouteSettings,
 } from "../types"
+import { parseKeepout } from "./keepout"
 
 export function parseSexprStructure(elements: any[]): Structure {
   const parsed: Partial<Structure> = {}
@@ -116,52 +115,6 @@ function parseBoundary(value: any[]): Boundary {
   }
 
   return boundarySchema.parse(boundaryObject)
-}
-
-function parseKeepout(value: any[]): Keepout {
-  const keepoutObj: Partial<Keepout> = { type: "keepout" }
-
-  if (typeof value[0] === "string") {
-    keepoutObj.id = value[0]
-    value = value.slice(1)
-  }
-
-  value.forEach((v: any) => {
-    const [key, ...rest] = v
-    if (key === "polygon") {
-      const [layer, ...vertices] = rest
-
-      const hasApertureWidth = vertices.length % 2 !== 0
-      const apertureWidth = hasApertureWidth
-        ? parseFloat(vertices[0])
-        : undefined
-      const verticesStart = hasApertureWidth ? 1 : 0
-
-      keepoutObj.shape = {
-        type: key,
-        layer,
-        vertices: vertices
-          .slice(verticesStart)
-          .reduce((acc: [number, number][], curr: string, index: number) => {
-            if (index % 2 === 0) {
-              acc.push([
-                parseFloat(curr),
-                parseFloat(vertices[verticesStart + index + 1]),
-              ])
-            }
-            return acc
-          }, []),
-      }
-
-      if (apertureWidth !== undefined) {
-        keepoutObj.shape.aperture_width = apertureWidth
-      }
-    } else if (key === "clearance_class") {
-      keepoutObj.clearance_class = rest[0]
-    }
-  })
-
-  return keepoutSchema.parse(keepoutObj)
 }
 
 function parseVia(value: any[]): Via {
