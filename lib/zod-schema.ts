@@ -86,6 +86,7 @@ export const keepoutSchema = z.object({
 
 // Via schema
 export const viaSchema = z.object({
+  type: z.literal("via"),
   primary_padstack: z.string(),
   spare_padstacks: z.array(z.string()),
 })
@@ -221,32 +222,38 @@ export const librarySchema = z.array(
 
 // Net schema
 export const netSchema = z.object({
+  type: z.literal("net"),
   name: z.string(),
-  pins: z.array(z.string()),
+  net_number: z.string().optional(),
+  pins: z.union([z.string(), z.array(z.string())]),
 })
 
-// Net class schema
-export const netClassSchema = z.object({
+// Via rule schema
+export const viaRuleSchema = z.object({
+  type: z.literal("via_rule"),
+  name: z.string(),
+  via: z.string(),
+})
+
+// Class schema
+export const classSchema = z.object({
+  type: z.literal("class"),
   name: z.string(),
   nets: z.array(z.string()),
-})
-
-// Net connection schema
-export const netConnectionSchema = z.object({
-  name: z.string(),
-  fromtos: z.array(
-    z.object({
-      from: z.string(),
-      to: z.string(),
-    })
-  ),
+  circuit: z
+    .record(z.string(), z.union([z.string(), z.array(z.string())]))
+    .optional(),
+  rule: ruleSchema.optional(),
+  clearance_class: z.string().optional(),
+  via_rule: z.string().optional(),
 })
 
 // Network schema
 export const networkSchema = z.object({
-  nets: z.array(netSchema),
-  classes: z.array(netClassSchema).optional(),
-  connections: z.array(netConnectionSchema).optional(),
+  nets: z.array(netSchema).optional(),
+  vias: z.array(viaSchema).optional(),
+  via_rules: z.array(viaRuleSchema).optional(),
+  classes: z.array(classSchema).optional(),
 })
 
 // Wire schema
