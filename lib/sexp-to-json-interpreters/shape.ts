@@ -5,6 +5,7 @@ export const SHAPE_NAMES = new Set([
   "circle",
   "polygon",
   "path",
+  "polyline_path",
 ] as const)
 
 export function parseShape(data: any[]): Shape {
@@ -32,6 +33,7 @@ export function parseShape(data: any[]): Shape {
         ],
       }
     case "path":
+    case "polyline_path":
       return {
         type: "path",
         layer,
