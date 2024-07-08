@@ -1,7 +1,7 @@
 import type { Network, Net, ViaRule, Class } from "../types"
 import { networkSchema } from "../zod-schema"
-import { parseRule } from "./rule"
-import { parseVia } from "./via"
+import { parseSexprRule } from "./rule"
+import { parseSexprVia } from "./via"
 
 export function parseSexprNetwork(elements: any[]): Network {
   const result: Network = {
@@ -17,11 +17,11 @@ export function parseSexprNetwork(elements: any[]): Network {
     switch (type) {
       case "net":
         if (!result.nets) result.nets = []
-        result.nets.push(parseNet(data))
+        result.nets.push(parseSexprNet(data))
         break
       case "via":
         if (!result.vias) result.vias = []
-        result.vias.push(parseVia(data))
+        result.vias.push(parseSexprVia(data))
         break
       case "via_rule":
         if (!result.via_rules) result.via_rules = []
@@ -29,7 +29,7 @@ export function parseSexprNetwork(elements: any[]): Network {
         break
       case "class":
         if (!result.classes) result.classes = []
-        result.classes.push(parseClass(data))
+        result.classes.push(parseSexprClass(data))
         break
       default:
         console.warn(`Unexpected network element type: ${type}`)
@@ -39,7 +39,7 @@ export function parseSexprNetwork(elements: any[]): Network {
   return networkSchema.parse(result)
 }
 
-function parseNet(data: any[]): Net {
+function parseSexprNet(data: any[]): Net {
   const result: Net = {
     name: data[0],
     pins: [],
@@ -71,7 +71,7 @@ function parseViaRule(data: any[]): ViaRule {
   }
 }
 
-function parseClass(data: any[]): Class {
+function parseSexprClass(data: any[]): Class {
   const [name, ...rest] = data
   const result: Class = {
     name,
@@ -82,10 +82,10 @@ function parseClass(data: any[]): Class {
     if (Array.isArray(item)) {
       switch (item[0]) {
         case "circuit":
-          result.circuit = parseCircuit(item.slice(1))
+          result.circuit = parseSexprCircuit(item.slice(1))
           break
         case "rule":
-          result.rule = parseRule(item.slice(1))
+          result.rule = parseSexprRule(item.slice(1))
           break
         case "clearance_class":
           result.clearance_class = item[1]
@@ -102,7 +102,7 @@ function parseClass(data: any[]): Class {
   return result
 }
 
-function parseCircuit(data: any[]): { [key: string]: string | string[] } {
+function parseSexprCircuit(data: any[]): { [key: string]: string | string[] } {
   const result: { [key: string]: string | string[] } = {}
   data.forEach((item) => {
     const [key, ...values] = item

@@ -8,7 +8,7 @@ export const SHAPE_NAMES = new Set([
   "polyline_path",
 ] as const)
 
-export function parseShape(data: any[]): Shape {
+export function parseSexprShape(data: any[]): Shape {
   const [shapeType, layer, ...shapeData] = data
 
   switch (shapeType) {

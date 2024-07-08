@@ -1,7 +1,7 @@
 import type { Via } from "lib/types"
 import { viaSchema } from "lib/zod-schema"
 
-export function parseVia(value: any[]): Via {
+export function parseSexprVia(value: any[]): Via {
   if (value.length === 0) {
     throw new Error("Via array is empty")
   }

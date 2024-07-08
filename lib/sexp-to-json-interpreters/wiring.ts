@@ -1,7 +1,7 @@
 import type { Wiring, Wire } from "../types"
 import { wireSchema, wiringSchema } from "../zod-schema"
-import { parseVia } from "./via"
-import { parseShape, SHAPE_NAMES } from "./shape"
+import { parseSexprVia as parseSexprVia } from "./via"
+import { parseSexprShape, SHAPE_NAMES } from "./shape"
 
 export function parseSexprWiring(elements: any[]): Wiring {
   const result: Wiring = {
@@ -14,10 +14,10 @@ export function parseSexprWiring(elements: any[]): Wiring {
 
     switch (type) {
       case "wire":
-        result.wires.push(parseWire(data))
+        result.wires.push(parseSexprWire(data))
         break
       case "via":
-        result.vias.push(parseVia(data))
+        result.vias.push(parseSexprVia(data))
         break
       default:
         console.warn(`Unexpected wiring element type: ${type}`)
@@ -27,14 +27,14 @@ export function parseSexprWiring(elements: any[]): Wiring {
   return wiringSchema.parse(result)
 }
 
-function parseWire(data: any[]): Wire {
+function parseSexprWire(data: any[]): Wire {
   const result: Partial<Wire> = {}
 
   data.forEach((item) => {
     if (Array.isArray(item)) {
       const [key, ...values] = item
       if (SHAPE_NAMES.has(key)) {
-        result.shape = parseShape([key, ...values])
+        result.shape = parseSexprShape([key, ...values])
       } else {
         switch (key) {
           case "net":
