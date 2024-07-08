@@ -41,7 +41,6 @@ export function parseSexprNetwork(elements: any[]): Network {
 
 function parseNet(data: any[]): Net {
   const result: Net = {
-    type: "net",
     name: data[0],
     pins: [],
   }
@@ -67,7 +66,6 @@ function parseNet(data: any[]): Net {
 function parseViaRule(data: any[]): ViaRule {
   const [name, via] = data
   return {
-    type: "via_rule",
     name,
     via,
   }
@@ -76,7 +74,6 @@ function parseViaRule(data: any[]): ViaRule {
 function parseClass(data: any[]): Class {
   const [name, ...rest] = data
   const result: Class = {
-    type: "class",
     name,
     nets: [],
   }

@@ -22,7 +22,7 @@ const rectSchema = baseShapeSchema.extend({
 })
 
 const pathSchema = baseShapeSchema.extend({
-  type: z.literal("path"),
+  type: z.enum(["path", "polyline_path"]),
   width: z.number(),
   coordinates: coordinateArray,
 })
@@ -77,7 +77,6 @@ export const boundarySchema = shapeSchema
 
 // Keepout schema
 export const keepoutSchema = z.object({
-  type: z.literal("keepout"),
   id: z.string().optional(),
   shape: shapeSchema,
   aperture_width: z.number().optional(),
@@ -86,9 +85,15 @@ export const keepoutSchema = z.object({
 
 // Via schema
 export const viaSchema = z.object({
-  type: z.literal("via"),
-  primary_padstack: z.string(),
-  spare_padstacks: z.array(z.string()),
+  padstack_id: z.string(),
+  x: z.number().optional(),
+  y: z.number().optional(),
+  net: z.string().optional(),
+  net_code: z.string().optional(),
+  via_type: z.string().optional(),
+  clearance_class: z.string().optional(),
+  spare_padstack_ids: z.array(z.string()).optional(),
+  property: z.string().optional(),
 })
 
 // Rule schema
@@ -144,11 +149,11 @@ export const autorouteSettingsSchema = z.object({
 
 // Structure schema
 export const structureSchema = z.object({
-  layer: z.array(layerSchema),
-  boundary: z.array(boundarySchema),
-  keepout: z.array(keepoutSchema).optional(),
+  layers: z.array(layerSchema),
+  boundaries: z.array(boundarySchema),
+  keepouts: z.array(keepoutSchema).optional(),
   via: viaSchema,
-  rule: z.array(ruleSchema),
+  rules: z.array(ruleSchema),
   snap_angle: z.enum(["fortyfive_degree", "ninety_degree"]),
   control: controlSchema,
   autoroute_settings: autorouteSettingsSchema,
@@ -222,7 +227,6 @@ export const librarySchema = z.array(
 
 // Net schema
 export const netSchema = z.object({
-  type: z.literal("net"),
   name: z.string(),
   net_number: z.string().optional(),
   pins: z.union([z.string(), z.array(z.string())]),
@@ -230,14 +234,12 @@ export const netSchema = z.object({
 
 // Via rule schema
 export const viaRuleSchema = z.object({
-  type: z.literal("via_rule"),
   name: z.string(),
   via: z.string(),
 })
 
 // Class schema
 export const classSchema = z.object({
-  type: z.literal("class"),
   name: z.string(),
   nets: z.array(z.string()),
   circuit: z
@@ -258,28 +260,16 @@ export const networkSchema = z.object({
 
 // Wire schema
 export const wireSchema = z.object({
-  layer: z.string(),
-  path: z.array(z.number()),
+  shape: shapeSchema,
   net: z.string(),
   type: z.string().optional(),
-  width: z.number().optional(),
+  clearance_class: z.string().optional(),
 })
 
 // Wiring schema
 export const wiringSchema = z.object({
   wires: z.array(wireSchema),
-  vias: z
-    .array(
-      z.object({
-        name: z.string(),
-        net: z.string(),
-        type: z.string(),
-        x: z.number(),
-        y: z.number(),
-        padstack: z.string(),
-      })
-    )
-    .optional(),
+  vias: z.array(viaSchema),
 })
 
 // Main PCB Design schema

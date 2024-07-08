@@ -25,23 +25,23 @@ export function parseSexprStructure(elements: any[]): Structure {
 
     switch (key) {
       case "layer":
-        parsed.layer = parsed.layer || []
-        parsed.layer.push(parseLayer(value))
+        parsed.layers = parsed.layers || []
+        parsed.layers.push(parseLayer(value))
         break
       case "boundary":
-        parsed.boundary = parsed.boundary || []
-        parsed.boundary.push(parseBoundary(value[0]))
+        parsed.boundaries = parsed.boundaries || []
+        parsed.boundaries.push(parseBoundary(value[0]))
         break
       case "keepout":
-        parsed.keepout = parsed.keepout || []
-        parsed.keepout.push(parseKeepout(value))
+        parsed.keepouts = parsed.keepouts || []
+        parsed.keepouts.push(parseKeepout(value))
         break
       case "via":
         parsed.via = parseVia(value)
         break
       case "rule":
-        parsed.rule = parsed.rule || []
-        parsed.rule.push(parseRule(value))
+        parsed.rules = parsed.rules || []
+        parsed.rules.push(parseRule(value))
         break
       case "control":
         parsed.control = parseControl(value)

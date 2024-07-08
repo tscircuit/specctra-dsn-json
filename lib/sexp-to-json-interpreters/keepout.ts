@@ -3,7 +3,7 @@ import { keepoutSchema } from "lib/zod-schema"
 import { SHAPE_NAMES, parseShape } from "./shape"
 
 export function parseKeepout(value: any[]): Keepout {
-  const keepoutObj: Partial<Keepout> = { type: "keepout" }
+  const keepoutObj: Partial<Keepout> = {}
 
   if (typeof value[0] === "string") {
     keepoutObj.id = value[0]
