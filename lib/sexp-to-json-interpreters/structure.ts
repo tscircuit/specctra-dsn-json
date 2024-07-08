@@ -3,8 +3,6 @@ import {
   structureSchema,
   layerSchema,
   boundarySchema,
-  viaSchema,
-  ruleSchema,
   controlSchema,
   autorouteSettingsSchema,
 } from "../zod-schema"
@@ -12,12 +10,12 @@ import type {
   Structure,
   Layer,
   Boundary,
-  Via,
-  Rule,
   Control,
   AutorouteSettings,
 } from "../types"
 import { parseKeepout } from "./keepout"
+import { parseRule } from "./rule"
+import { parseVia } from "./via"
 
 export function parseSexprStructure(elements: any[]): Structure {
   const parsed: Partial<Structure> = {}
@@ -115,33 +113,6 @@ function parseBoundary(value: any[]): Boundary {
   }
 
   return boundarySchema.parse(boundaryObject)
-}
-
-function parseVia(value: any[]): Via {
-  const [primary_padstack, ...spare_padstacks] = value
-  return viaSchema.parse({ primary_padstack, spare_padstacks })
-}
-
-function parseRule(value: any[]): Rule {
-  const ruleObj: Partial<Rule> = {}
-
-  value.forEach((v: any) => {
-    const [key, ...rest] = v
-    if (key === "width") {
-      ruleObj.width = parseFloat(rest[0])
-    } else if (key === "clearance" || key === "clear") {
-      ruleObj.clearances = ruleObj.clearances || []
-      const clearanceObj: { value: number; type?: string } = {
-        value: parseFloat(rest[0]),
-      }
-      if (rest.length > 1 && rest[1][0] === "type") {
-        clearanceObj.type = rest[1][1]
-      }
-      ruleObj.clearances.push(clearanceObj)
-    }
-  })
-
-  return ruleSchema.parse(ruleObj)
 }
 
 function parseControl(value: any[]): Control {

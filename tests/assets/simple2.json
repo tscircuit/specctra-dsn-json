@@ -417,5 +417,212 @@
       ["shape", ["circle", "B.Cu", "3149.6"]],
       ["attach", "off"]
     ]
+  ],
+  [
+    "network",
+    [
+      "net",
+      "GND",
+      ["pins", "C1-N", "K1-1", "U1-8", "U1-13", "U2-8", "U2-13", "C2-2", "C3-2"]
+    ],
+    [
+      "net",
+      "GND",
+      ["pins", "C1-N", "K1-1", "U1-8", "U1-13", "U2-8", "U2-13", "C2-2", "C3-2"]
+    ],
+    ["net", "/K2", ["pins", "U2-15", "DP2-3"]],
+    ["net", "/K3", ["pins", "U2-2", "DP3-8"]],
+    [
+      "net",
+      "row4",
+      ["pins", "D55-1", "D57-1", "D56-1", "D58-1", "U2-12", "D60-1", "D59-1"]
+    ],
+    ["net", "Net-(D2-Pad1)", "1", ["pins", "U24-11", "U24-8", "D2-1"]],
+    ["net", "~{WAIT}", "1", ["pins", "JP2-2", "RN1-6", "U6-17", "P1-25"]],
+    ["net", "~{RFSH}", "1", ["pins", "U11-14", "P1-29"]],
+    ["net", "~{HALT}", "1", ["pins", "U24-9", "U11-16", "P1-27"]],
+    [
+      "net",
+      "/waitstate/6WS",
+      "1",
+      ["pins", "J2-13", "J4-11", "U13-11", "J1-13", "J3-11"]
+    ],
+    [
+      "net",
+      "/waitstate/5WS",
+      "1",
+      ["pins", "J2-11", "J4-9", "U13-10", "J1-11", "J3-9"]
+    ],
+    ["net", "/fpanel/FP-D7", "1", ["pins", "U31-11", "RN5-9", "J11-22"]],
+    ["net", "/fpanel/FP-D6", "1", ["pins", "U31-13", "RN5-8", "J11-20"]],
+    ["net", "unconnected-(J8-Pad7)", "1", ["pins", "J8-7"]],
+    ["net", "unconnected-(J8-Pad8)", "1", ["pins", "J8-8"]],
+    ["net", "/bus/CRUOUT", ["pins", "P1-16"]],
+    ["net", "/bus/CRUIN", ["pins", "P1-18"]],
+    [
+      "via",
+      "Via[0-1]_800:400_um-kicad_default",
+      "Via[0-1]_800:400_um",
+      "kicad_default"
+    ],
+    ["via", "Via[0-1]_800:400_um-G_PLCC", "Via[0-1]_800:400_um", "G_PLCC"],
+    ["via", "Via[0-1]_800:400_um-Power", "Via[0-1]_800:400_um", "Power"],
+    ["via_rule", "default", "Via[0-1]_800:400_um"],
+    ["via_rule", "kicad_default", "Via[0-1]_800:400_um-kicad_default"],
+    [
+      "net",
+      "ONE",
+      "1",
+      [
+        "pins",
+        "NT3-2",
+        "U14-43",
+        "U14-15",
+        "U14-14",
+        "U10-4",
+        "J2-1",
+        "U13-2",
+        "U13-1",
+        "J1-1"
+      ]
+    ],
+    [
+      "net",
+      "VDD",
+      [
+        "pins",
+        "J3-2",
+        "J3-2@1",
+        "SW60-C",
+        "RSW2-1",
+        "D115-1",
+        "D106-1",
+        "D111-1",
+        "D125-1",
+        "D107-1",
+        "D118-1",
+        "D97-2"
+      ]
+    ],
+    [
+      "net",
+      "GND",
+      "1",
+      [
+        "pins",
+        "C40-2",
+        "NT1-1",
+        "U27-10",
+        "NT4-1",
+        "NT2-1",
+        "C24-2",
+        "C13-2",
+        "R1-1",
+        "C39-2",
+        "SW1-2",
+        "U25-12",
+        "U2-7",
+        "U2-4",
+        "U14-22",
+        "JP12-1"
+      ]
+    ],
+    [
+      "class",
+      "kicad_default",
+      "",
+      "/A",
+      "/B",
+      "/C",
+      "/D",
+      "/E",
+      "/F",
+      "/G",
+      "/K1",
+      "/K2",
+      "/K3",
+      "/K4",
+      "/K5",
+      "/K6",
+      "/K7",
+      "/K8",
+      "/P",
+      "GND",
+      "Net-(K1-Pad3)",
+      "Net-(K1-Pad4)",
+      "Net-(K1-Pad5)",
+      "Net-(R1-Pad1)",
+      "Net-(R2-Pad1)",
+      "Net-(R3-Pad1)",
+      "Net-(R4-Pad1)",
+      "Net-(R5-Pad1)",
+      "Net-(R6-Pad1)",
+      "Net-(R7-Pad1)",
+      "Net-(R8-Pad1)",
+      "Net-(U1-Pad9)",
+      "VCC",
+      ["circuit", ["use_via", "Via[0-1]_600:400_um"]],
+      ["rule", ["width", "250"], ["clearance", "200.1"]]
+    ],
+    [
+      "class",
+      "GND",
+      "GND",
+      ["circuit", ["use_via", "Via[0-1]_400:300_um"]],
+      ["rule", ["width", "500"], ["clearance", "200.1"]]
+    ],
+    [
+      "class",
+      "VCC",
+      "VCC",
+      ["circuit", ["use_via", "Via[0-1]_400:300_um"]],
+      ["rule", ["width", "500"], ["clearance", "200.1"]]
+    ],
+    [
+      "class",
+      "G_PLCC",
+      "/DMA/GND-DMA1",
+      "/DMA/GND-DMA2",
+      ["clearance_class", "G_PLCC"],
+      ["via_rule", "G_PLCC"],
+      ["rule", ["width", "700.0"]],
+      ["circuit", ["use_layer", "F.Cu", "B.Cu"]]
+    ],
+    [
+      "class",
+      "Power",
+      "GND",
+      "VCC",
+      "-12V",
+      "+12V",
+      ["clearance_class", "Power"],
+      ["via_rule", "Power"],
+      ["rule", ["width", "1000.0"]],
+      ["circuit", ["use_layer", "F.Cu", "B.Cu"]]
+    ],
+    [
+      "class",
+      "kicad_default",
+      ["circuit", ["use_via", "Via[0-1]_800:400_um"]],
+      ["rule", ["width", "250"], ["clearance", "200.1"]]
+    ],
+    [
+      "class",
+      "G_PLCC",
+      "/DMA/GND-DMA1",
+      "/DMA/GND-DMA2",
+      ["circuit", ["use_via", "Via[0-1]_800:400_um"]],
+      ["rule", ["width", "700"], ["clearance", "200.1"]]
+    ],
+    [
+      "class",
+      "Power",
+      "+12V",
+      "-12V",
+      "GND",
+      "VCC",
+      ["circuit", ["use_via", "Via[0-1]_800:400_um"]],
+      ["rule", ["width", "1000"], ["clearance", "200.1"]]
+    ]
   ]
 ]

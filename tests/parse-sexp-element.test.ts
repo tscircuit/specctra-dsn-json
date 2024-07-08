@@ -17,4 +17,5 @@ test("parseSexpElement parses s-expression array representation without throwing
   t.truthy(result.structure)
   t.truthy(result.placement)
   t.truthy(result.library)
+  t.truthy(result.network)
 })

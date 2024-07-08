@@ -18,12 +18,12 @@ import {
   padstackSchema,
   networkSchema,
   netSchema,
-  netClassSchema,
-  netConnectionSchema,
+  viaRuleSchema,
+  classSchema,
   wiringSchema,
   wireSchema,
   shapeSchema,
-  circleSchema
+  circleSchema,
 } from "./zod-schema"
 
 export type PcbDesign = z.infer<typeof pcbDesignSchema>
@@ -44,8 +44,8 @@ export type Image = z.infer<typeof imageSchema>
 export type Padstack = z.infer<typeof padstackSchema>
 export type Network = z.infer<typeof networkSchema>
 export type Net = z.infer<typeof netSchema>
-export type NetClass = z.infer<typeof netClassSchema>
-export type NetConnection = z.infer<typeof netConnectionSchema>
+export type ViaRule = z.infer<typeof viaRuleSchema>
+export type Class = z.infer<typeof classSchema>
 export type Wiring = z.infer<typeof wiringSchema>
 export type Wire = z.infer<typeof wireSchema>
 export type Shape = z.infer<typeof shapeSchema>
