@@ -1,17 +1,17 @@
 import { librarySchema, imageSchema, padstackSchema } from "../zod-schema"
 import type { Library, Image, Padstack } from "../types"
-import { parseShape } from "./shape"
-import { parseKeepout } from "./keepout"
+import { parseSexprShape } from "./shape"
+import { parseSexprKeepout } from "./keepout"
 
 export function parseSexprLibrary(elements: any[]): Library {
   const parsed: Library = elements.reduce((acc: Library, element) => {
     const [key, ...value] = element
     switch (key) {
       case "image":
-        acc.push({ image: parseImage(value) })
+        acc.push({ image: parseSexprImage(value) })
         break
       case "padstack":
-        acc.push({ padstack: parsePadstack(value) })
+        acc.push({ padstack: parseSexprPadstack(value) })
         break
       default:
         console.warn(`Unexpected key in library: ${key}`)
@@ -22,7 +22,7 @@ export function parseSexprLibrary(elements: any[]): Library {
   return librarySchema.parse(parsed)
 }
 
-function parseImage(value: any[]): Image {
+function parseSexprImage(value: any[]): Image {
   const [name, ...elements] = value
   const image: Partial<Image> = { name }
 
@@ -34,15 +34,15 @@ function parseImage(value: any[]): Image {
         break
       case "outline":
         if (!image.outlines) image.outlines = []
-        image.outlines.push(parseShape(data[0]))
+        image.outlines.push(parseSexprShape(data[0]))
         break
       case "pin":
         if (!image.pins) image.pins = []
-        image.pins.push(parsePin(data))
+        image.pins.push(parseSexprPin(data))
         break
       case "keepout":
         if (!image.keepouts) image.keepouts = []
-        image.keepouts.push(parseKeepout(data))
+        image.keepouts.push(parseSexprKeepout(data))
         break
       default:
         console.warn(`Unexpected key in image: ${key}`)
@@ -52,7 +52,7 @@ function parseImage(value: any[]): Image {
   return imageSchema.parse(image)
 }
 
-function parsePin(data: any[]): NonNullable<Image["pins"]>[number] {
+function parseSexprPin(data: any[]): NonNullable<Image["pins"]>[number] {
   const pin: NonNullable<Image["pins"]>[number] = {
     type: data[0],
     id: "",
@@ -73,7 +73,7 @@ function parsePin(data: any[]): NonNullable<Image["pins"]>[number] {
   return pin
 }
 
-function parsePadstack(value: any[]): Padstack {
+function parseSexprPadstack(value: any[]): Padstack {
   const [name, ...elements] = value
   const padstack: Partial<Padstack> = { name, shapes: [] }
 
@@ -81,7 +81,7 @@ function parsePadstack(value: any[]): Padstack {
     const [key, ...data] = element
     switch (key) {
       case "shape":
-        padstack.shapes!.push(parseShape(data[0]))
+        padstack.shapes!.push(parseSexprShape(data[0]))
         break
       case "attach":
         padstack.attach = data[0]

@@ -1,7 +1,7 @@
 import type { Rule } from "lib/types"
 import { ruleSchema } from "lib/zod-schema"
 
-export function parseRule(value: any[]): Rule {
+export function parseSexprRule(value: any[]): Rule {
   const ruleObj: Partial<Rule> = {}
 
   value.forEach((v: any) => {

@@ -13,9 +13,9 @@ import type {
   Control,
   AutorouteSettings,
 } from "../types"
-import { parseKeepout } from "./keepout"
-import { parseRule } from "./rule"
-import { parseVia } from "./via"
+import { parseSexprKeepout as parseSexprKeepout } from "./keepout"
+import { parseSexprRule as parseSexprRule } from "./rule"
+import { parseSexprVia } from "./via"
 
 export function parseSexprStructure(elements: any[]): Structure {
   const parsed: Partial<Structure> = {}
@@ -25,29 +25,29 @@ export function parseSexprStructure(elements: any[]): Structure {
 
     switch (key) {
       case "layer":
-        parsed.layer = parsed.layer || []
-        parsed.layer.push(parseLayer(value))
+        parsed.layers = parsed.layers || []
+        parsed.layers.push(parseSexprLayer(value))
         break
       case "boundary":
-        parsed.boundary = parsed.boundary || []
-        parsed.boundary.push(parseBoundary(value[0]))
+        parsed.boundaries = parsed.boundaries || []
+        parsed.boundaries.push(parseSexprBoundary(value[0]))
         break
       case "keepout":
-        parsed.keepout = parsed.keepout || []
-        parsed.keepout.push(parseKeepout(value))
+        parsed.keepouts = parsed.keepouts || []
+        parsed.keepouts.push(parseSexprKeepout(value))
         break
       case "via":
-        parsed.via = parseVia(value)
+        parsed.via = parseSexprVia(value)
         break
       case "rule":
-        parsed.rule = parsed.rule || []
-        parsed.rule.push(parseRule(value))
+        parsed.rules = parsed.rules || []
+        parsed.rules.push(parseSexprRule(value))
         break
       case "control":
-        parsed.control = parseControl(value)
+        parsed.control = parseSexprControl(value)
         break
       case "autoroute_settings":
-        parsed.autoroute_settings = parseAutorouteSettings(value)
+        parsed.autoroute_settings = parseSexprAutorouteSettings(value)
         break
       case "snap_angle":
         parsed.snap_angle = value[0] as "fortyfive_degree" | "ninety_degree"
@@ -65,7 +65,7 @@ export function parseSexprStructure(elements: any[]): Structure {
   return structureSchema.parse(parsed)
 }
 
-function parseLayer(value: any[]): Layer {
+function parseSexprLayer(value: any[]): Layer {
   const [name, ...properties] = value
   const layerObj: Partial<Layer> = { name }
 
@@ -82,7 +82,7 @@ function parseLayer(value: any[]): Layer {
   return layerSchema.parse(layerObj)
 }
 
-function parseBoundary(value: any[]): Boundary {
+function parseSexprBoundary(value: any[]): Boundary {
   const [boundaryType, boundaryLayer, ...rest] = value
 
   let boundaryWidth: number | undefined
@@ -115,7 +115,7 @@ function parseBoundary(value: any[]): Boundary {
   return boundarySchema.parse(boundaryObject)
 }
 
-function parseControl(value: any[]): Control {
+function parseSexprControl(value: any[]): Control {
   const controlObj: Partial<Control> = {}
 
   value.forEach((v: any) => {
@@ -126,7 +126,7 @@ function parseControl(value: any[]): Control {
   return controlSchema.parse(controlObj)
 }
 
-function parseAutorouteSettings(value: any[]): AutorouteSettings {
+function parseSexprAutorouteSettings(value: any[]): AutorouteSettings {
   const settings: Partial<AutorouteSettings> = {}
   const layerRules: any[] = []
 
