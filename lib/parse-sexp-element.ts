@@ -7,6 +7,7 @@ import {
   parseSexprWiring,
 } from "./sexp-to-json-interpreters"
 import type { PcbDesign } from "./types"
+import { pcbDesignSchema } from "./zod-schema"
 
 export function parseSexpElement(sexp: any[]): PcbDesign {
   const parsedElement: Partial<PcbDesign> = {
@@ -51,5 +52,5 @@ export function parseSexpElement(sexp: any[]): PcbDesign {
     }
   })
 
-  return parsedElement as PcbDesign
+  return pcbDesignSchema.parse(parsedElement)
 }
