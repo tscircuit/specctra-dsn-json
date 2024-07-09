@@ -8,13 +8,13 @@ export function parseSexprVia(value: any[]): Via {
 
   const result: Partial<Via> = {}
 
-  const [padstackId, ...rest] = value
+  const [primaryPadstack, ...rest] = value
 
-  if (typeof padstackId !== "string") {
+  if (typeof primaryPadstack !== "string") {
     throw new Error("First element of via array must be a string (padstack_id)")
   }
 
-  result.padstack_id = padstackId
+  result.primary_padstack = primaryPadstack
 
   if (isCoordinates(rest)) {
     const [x, y, ...properties] = rest
@@ -60,15 +60,15 @@ function parseProperties(result: Partial<Via>, properties: any[]): void {
 
 function parseSparePadstacks(result: Partial<Via>, values: any[]): void {
   if (values.length === 1 && typeof values[0] === "string") {
-    result.spare_padstack_ids = [values[0]]
+    result.spare_padstacks = [values[0]]
   } else if (
     values.length === 2 &&
     typeof values[0] === "string" &&
     typeof values[1] === "string"
   ) {
-    result.spare_padstack_ids = [values[0]]
+    result.spare_padstacks = [values[0]]
     result.property = values[1]
   } else {
-    result.spare_padstack_ids = values.filter((v) => typeof v === "string")
+    result.spare_padstacks = values.filter((v) => typeof v === "string")
   }
 }
