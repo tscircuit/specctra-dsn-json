@@ -164,7 +164,8 @@ const sideSchema = z.enum(["front", "back"])
 // Place schema
 export const placeSchema = z.object({
   component_id: z.string(),
-  vertex: coordinatePair,
+  x: z.number(),
+  y: z.number(),
   side: sideSchema,
   rotation: z.number(),
   part_number: z.string().optional(),
@@ -182,7 +183,7 @@ export const placeSchema = z.object({
 export const placementSchema = z.array(
   z.object({
     component: z.string(),
-    place: placeSchema,
+    places: z.array(placeSchema),
   })
 )
 
