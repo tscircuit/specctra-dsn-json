@@ -1,7 +1,7 @@
-import type { Image, PcbDesign, Shape, Structure } from "lib/types"
+import type { Image, PathShape, PcbDesign } from "lib/types"
 import * as Soup from "@tscircuit/soup"
 import type { AnySoupElement } from "@tscircuit/soup"
-import { convertPcbStructureElementToSoup } from "./pcb-element-to-soup-converters/pcb-structure"
+import { mm } from "@tscircuit/mm"
 
 export const convertPcbJsonToTscircuitSoupJson = (pcb: PcbDesign) => {
   const soupElements: AnySoupElement[] = []
@@ -27,6 +27,8 @@ export const convertPcbJsonToTscircuitSoupJson = (pcb: PcbDesign) => {
     const pcbComponentOutlines = pcb.library
       .filter((el) => "image" in el)
       .filter((el) => el.image.name === pcbComponentName)
+      .flatMap((el) => el.image.outlines)
+      .filter((el) => el.type.includes("path")) as PathShape[]
     const pcbComponentDimensions = calculatePcbComponentDimensions(
       pcbComponentOutlines
     ) ?? { width: 0, height: 0 }
@@ -50,16 +52,16 @@ export const convertPcbJsonToTscircuitSoupJson = (pcb: PcbDesign) => {
   return soupElements
 }
 
-function calculatePcbComponentDimensions(outlines: any) {
+function calculatePcbComponentDimensions(outlines: PathShape[]) {
   let minX = Infinity
   let minY = Infinity
   let maxX = -Infinity
   let maxY = -Infinity
 
-  if (!("coordinated" in outlines[0])) return
+  if (outlines[0] && !("coordinates" in outlines[0])) return
 
-  outlines.forEach((outline: any) => {
-    outline.coordinates.forEach((coord: any) => {
+  outlines.forEach((outline) => {
+    outline.coordinates.forEach((coord) => {
       const [x, y] = coord
       minX = Math.min(minX, x)
       maxX = Math.max(maxX, x)
@@ -68,14 +70,8 @@ function calculatePcbComponentDimensions(outlines: any) {
     })
   })
 
-  // Calculate dimensions in original units
   const width = maxX - minX
   const height = maxY - minY
 
-  // Convert to mm (assuming original units are in 0.1 mils)
-  // 1 mil = 0.0254 mm, so 0.1 mil = 0.00254 mm
-  const widthMm = width * 0.00254
-  const heightMm = height * 0.00254
-
-  return { width: widthMm, height: heightMm }
+  return { width: mm(width), height: mm(height) }
 }

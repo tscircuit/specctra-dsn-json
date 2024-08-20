@@ -22,6 +22,7 @@
     "zod": "^3.23.8"
   },
   "dependencies": {
+    "@tscircuit/mm": "^0.0.7",
     "s-expression": "^3.1.1"
   }
 }

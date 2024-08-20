@@ -21,7 +21,7 @@ const rectSchema = baseShapeSchema.extend({
   coordinates: z.tuple([coordinatePair, coordinatePair]),
 })
 
-const pathSchema = baseShapeSchema.extend({
+export const pathSchema = baseShapeSchema.extend({
   type: z.enum(["path", "polyline_path"]),
   width: z.number(),
   coordinates: coordinateArray,
@@ -190,18 +190,16 @@ export const placementSchema = z.array(
 // Image schema
 export const imageSchema = z.object({
   name: z.string(),
-  outlines: z.array(shapeSchema).optional(),
-  pins: z
-    .array(
-      z.object({
-        type: z.string(),
-        id: z.string(),
-        x: z.number(),
-        y: z.number(),
-        rotate: z.number().optional(),
-      })
-    )
-    .optional(),
+  outlines: z.array(shapeSchema),
+  pins: z.array(
+    z.object({
+      type: z.string(),
+      id: z.string(),
+      x: z.number(),
+      y: z.number(),
+      rotate: z.number().optional(),
+    })
+  ),
   keepouts: z.array(keepoutSchema).optional(),
   side: sideSchema.optional(),
 })
