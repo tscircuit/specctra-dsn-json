@@ -1,10 +1,11 @@
-import type { Image, PathShape, PcbDesign } from "lib/types"
+import type { PathShape, PcbDesign } from "lib/types"
 import * as Soup from "@tscircuit/soup"
 import type { AnySoupElement } from "@tscircuit/soup"
 import { mm } from "@tscircuit/mm"
+import { parsePinName } from "./parse-pin-name"
 
-export const convertPcbJsonToTscircuitSoupJson = (pcb: PcbDesign) => {
-  const soupElements: AnySoupElement[] = []
+export const convertDsnJsonToTscircuitSoupJson = (pcb: PcbDesign) => {
+  const soupElements: AnySoupElement[][] = []
 
   const pcbComponents = pcb.placement.flatMap((component) => component.places)
 
@@ -12,11 +13,12 @@ export const convertPcbJsonToTscircuitSoupJson = (pcb: PcbDesign) => {
     index,
     { component_id, x, y, side, rotation },
   ] of pcbComponents.entries()) {
-    const soupElementId = index + 1
+    const componentSoupElements: AnySoupElement[] = []
+    const soupSourceComponentId = index + 1
     const componentFunctionalType = "simple_bug" // TODO figure out ftype
     const soupSourceComponent = Soup.any_source_component.parse({
       type: "source_component",
-      source_component_id: `source_component_${soupElementId}`,
+      source_component_id: `source_component_${soupSourceComponentId}`,
       name: component_id,
       ftype: componentFunctionalType,
     })
@@ -24,19 +26,26 @@ export const convertPcbJsonToTscircuitSoupJson = (pcb: PcbDesign) => {
     const pcbComponentName = pcb.placement.find((p) =>
       p.places.some((p) => p.component_id === component_id)
     )?.component
-    const pcbComponentOutlines = pcb.library
-      .filter((el) => "image" in el)
-      .filter((el) => el.image.name === pcbComponentName)
-      .flatMap((el) => el.image.outlines)
-      .filter((el) => el.type.includes("path")) as PathShape[]
+
+    const pcbImages = pcb.library.filter((el) => "image" in el)
+    const pcbComponentImage = pcbImages.find(
+      (el) => el.image.name === pcbComponentName
+    )?.image
+    if (!pcbComponentImage) {
+      throw new Error(`PCB component image not found: ${pcbComponentName}`)
+    }
+
+    const pcbComponentOutlines = pcbComponentImage.outlines.filter((el) =>
+      el.type.includes("path")
+    ) as PathShape[]
     const pcbComponentDimensions = calculatePcbComponentDimensions(
       pcbComponentOutlines
     ) ?? { width: 0, height: 0 }
 
     const soupPcbComponent = Soup.pcb_component.parse({
       type: "pcb_component",
-      pcb_component_id: `pcb_component_${soupElementId}`,
-      source_component_id: `source_component_${soupElementId}`,
+      pcb_component_id: `pcb_component_${soupSourceComponentId}`,
+      source_component_id: `source_component_${soupSourceComponentId}`,
       name: component_id,
       ftype: componentFunctionalType,
       width: pcbComponentDimensions.width,
@@ -46,7 +55,39 @@ export const convertPcbJsonToTscircuitSoupJson = (pcb: PcbDesign) => {
       layer: side === "front" ? "top" : "bottom",
     })
 
-    soupElements.push(soupSourceComponent, soupPcbComponent)
+    componentSoupElements.push(soupSourceComponent, soupPcbComponent)
+
+    pcbComponentImage.pins.sort(
+      (a, b) => Number(a.pin_number) - Number(b.pin_number)
+    )
+
+    for (const { pin_number, x, y, name } of pcbComponentImage.pins) {
+      const { shape, layer, width, height, radius } = parsePinName(name)
+      const soupSourcePort = Soup.source_port.parse({
+        type: "source_port",
+        source_port_id: `source_port_${pin_number}`,
+        source_component_id: soupSourceComponent.source_component_id,
+        name: pin_number,
+      })
+
+      const pad = {
+        pcb_smtpad_id: `pcb_smtpad_${pin_number}`,
+        pcb_component_id: soupPcbComponent.pcb_component_id,
+        pcb_port_id: soupSourcePort.source_port_id,
+        type: "pcb_smtpad",
+        x: mm(x),
+        y: mm(y),
+        shape,
+        layer,
+        width,
+        height,
+        ...(radius ? { radius } : {}),
+      }
+      const soupPcbPin = Soup.pcb_smtpad.parse(pad)
+
+      componentSoupElements.push(soupSourcePort, soupPcbPin)
+      soupElements.push(componentSoupElements)
+    }
   }
 
   return soupElements

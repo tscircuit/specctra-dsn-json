@@ -193,8 +193,8 @@ export const imageSchema = z.object({
   outlines: z.array(shapeSchema),
   pins: z.array(
     z.object({
-      type: z.string(),
-      id: z.string(),
+      name: z.string(),
+      pin_number: z.string(),
       x: z.number(),
       y: z.number(),
       rotate: z.number().optional(),

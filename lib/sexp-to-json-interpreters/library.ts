@@ -52,17 +52,17 @@ function parseSexprImage(value: any[]): Image {
 
 function parseSexprPin(data: any[]): NonNullable<Image["pins"]>[number] {
   const pin: NonNullable<Image["pins"]>[number] = {
-    type: data[0],
-    id: "",
+    name: data[0],
+    pin_number: "",
     x: 0,
     y: 0,
   }
 
   if (Array.isArray(data[1]) && data[1][0] === "rotate") {
     pin.rotate = parseFloat(data[1][1])
-    ;[, , pin.id, pin.x, pin.y] = data
+    ;[, , pin.pin_number, pin.x, pin.y] = data
   } else {
-    ;[, pin.id, pin.x, pin.y] = data
+    ;[, pin.pin_number, pin.x, pin.y] = data
   }
 
   pin.x = parseFloat(pin.x as any)
