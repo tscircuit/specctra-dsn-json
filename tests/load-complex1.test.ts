@@ -1,7 +1,6 @@
-import test from "ava"
+import { test, expect } from "bun:test"
 import { parseDsnToJson } from "lib"
 import { readFileSync } from "node:fs"
-import { getTestFixture } from "tests/fixtures/get-test-fixture"
 
 test("load complex dsn file", async (t) => {
   const complex1 = readFileSync(
@@ -11,5 +10,5 @@ test("load complex dsn file", async (t) => {
 
   const json = parseDsnToJson(complex1)
 
-  t.pass()
+  expect(true).toBe(true)
 })
