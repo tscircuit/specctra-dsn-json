@@ -2,7 +2,12 @@ import type { PathShape, PcbDesign } from "lib/types"
 import * as Soup from "@tscircuit/soup"
 import type { AnySoupElement } from "@tscircuit/soup"
 import { mm } from "@tscircuit/mm"
-import { parsePinName } from "./parse-pin-name"
+import {
+  extractLayerFromPinName,
+  isPlatedHole,
+  isSmtPad,
+  parsePinName,
+} from "./parse-pin-name"
 
 export const convertDsnJsonToTscircuitSoupJson = (pcb: PcbDesign) => {
   const soupElements: AnySoupElement[][] = []
@@ -61,7 +66,10 @@ export const convertDsnJsonToTscircuitSoupJson = (pcb: PcbDesign) => {
       (a, b) => Number(a.pin_number) - Number(b.pin_number)
     )
 
-    for (const { pin_number, x, y, name } of pcbComponentImage.pins) {
+    const pcbComponentSmtPads = pcbComponentImage.pins.filter(({ name }) =>
+      isSmtPad(name)
+    )
+    for (const { pin_number, x, y, name } of pcbComponentSmtPads) {
       const { shape, layer, width, height, radius } = parsePinName(name)
       const soupSourcePort = Soup.source_port.parse({
         type: "source_port",
@@ -88,6 +96,10 @@ export const convertDsnJsonToTscircuitSoupJson = (pcb: PcbDesign) => {
       componentSoupElements.push(soupSourcePort, soupPcbPin)
       soupElements.push(componentSoupElements)
     }
+
+    const pcbComponentPlatedHoles = pcbComponentImage.pins.filter(({ name }) =>
+      isPlatedHole(name)
+    )
   }
 
   return soupElements

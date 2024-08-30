@@ -1,7 +1,7 @@
 import { mm } from "@tscircuit/mm"
 
 type Shape = "circle" | "rect"
-type Layer = "top" | "bottom"
+type Layer = "top" | "bottom" | "all"
 
 interface ParsedPin {
   shape: Shape
@@ -12,7 +12,7 @@ interface ParsedPin {
 }
 
 const layerMap = {
-  A: "top", // "A" likely stands for "all" but we default to "top" for now
+  A: "all",
   T: "top",
   B: "bottom",
 } as const
@@ -51,7 +51,7 @@ export const parsePinName = (name: string): ParsedPin => {
 
   return {
     shape: isRound ? "circle" : "rect",
-    layer: layer ? layerMap[layer as InputLayer] : "top",
+    layer: layer ? layerMap[layer as InputLayer] ?? "top" : "top",
     ...(!isRound
       ? { width: mm(parsedResult.width), height: mm(parsedResult.height) }
       : {}),
@@ -99,7 +99,24 @@ const parseRoundRectPad = (
 }
 
 const parseCustomPad = (rest: string): Omit<ParsedPin, "shape" | "layer"> => {
-  // This is a placeholder for custom pad parsing
-  // The exact implementation would depend on your specific custom pad format
+  // This is a placeholder for parsing custom pads
   return { width: 0, height: 0 }
 }
+
+export function extractLayerFromPinName(pinName: string): "B" | "T" | "A" {
+  const layerRegex = /\[([BTA])\]/
+
+  const match = pinName.match(layerRegex)
+
+  if (match) {
+    return match[1] as "B" | "T" | "A"
+  } else {
+    throw new Error(`Invalid layer in pin string: ${pinName}`)
+  }
+}
+
+export const isPlatedHole = (pinName: string): boolean =>
+  extractLayerFromPinName(pinName) === "A"
+
+export const isSmtPad = (pinName: string): boolean =>
+  extractLayerFromPinName(pinName) !== "A"
