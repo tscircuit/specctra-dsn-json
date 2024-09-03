@@ -1,0 +1,740 @@
+{
+  "pcb_id": "/Users/seve/w/tsc/specctra-dsn-json/tests/simpledsn1/simpledsn1.dsn",
+  "parser": {
+    "space_in_quoted_tokens": true,
+    "host_cad": "KiCad's Pcbnew",
+    "host_version": "8.0.3"
+  },
+  "resolution": {
+    "unit": "um",
+    "value": 10
+  },
+  "unit": "um",
+  "structure": {
+    "layers": [
+      {
+        "name": "F.Cu",
+        "type": "signal",
+        "properties": {
+          "index": "0"
+        }
+      },
+      {
+        "name": "B.Cu",
+        "type": "signal",
+        "properties": {
+          "index": "1"
+        }
+      }
+    ],
+    "boundaries": [
+      {
+        "layer": "pcb",
+        "type": "path",
+        "width": 0,
+        "coordinates": [
+          [
+            158000,
+            -108000
+          ],
+          [
+            147500,
+            -108000
+          ],
+          [
+            147500,
+            -102000
+          ],
+          [
+            158000,
+            -102000
+          ],
+          [
+            158000,
+            -108000
+          ]
+        ]
+      }
+    ],
+    "via": {
+      "primary_padstack": "Via[0-1]_600:300_um",
+      "spare_padstacks": []
+    },
+    "rules": [
+      {
+        "width": 200,
+        "clearances": [
+          {
+            "value": 200
+          },
+          {
+            "value": 200,
+            "type": "default_smd"
+          },
+          {
+            "value": 50,
+            "type": "smd_smd"
+          }
+        ]
+      }
+    ]
+  },
+  "placement": [
+    {
+      "component": "Capacitor_SMD:C_0603_1608Metric",
+      "places": [
+        {
+          "component_id": "C1",
+          "x": 155020,
+          "y": -105000,
+          "side": "front",
+          "rotation": 0,
+          "part_number": "1uF"
+        }
+      ]
+    },
+    {
+      "component": "Resistor_SMD:R_0402_1005Metric",
+      "places": [
+        {
+          "component_id": "R1",
+          "x": 149990,
+          "y": -105000,
+          "side": "front",
+          "rotation": 0,
+          "part_number": "1k"
+        }
+      ]
+    }
+  ],
+  "library": [
+    {
+      "image": {
+        "name": "Capacitor_SMD:C_0603_1608Metric",
+        "outlines": [
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 120,
+            "coordinates": [
+              [
+                -140.58,
+                510
+              ],
+              [
+                140.58,
+                510
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 120,
+            "coordinates": [
+              [
+                -140.58,
+                -510
+              ],
+              [
+                140.58,
+                -510
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 50,
+            "coordinates": [
+              [
+                -1480,
+                730
+              ],
+              [
+                1480,
+                730
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 50,
+            "coordinates": [
+              [
+                -1480,
+                -730
+              ],
+              [
+                -1480,
+                730
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 50,
+            "coordinates": [
+              [
+                1480,
+                730
+              ],
+              [
+                1480,
+                -730
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 50,
+            "coordinates": [
+              [
+                1480,
+                -730
+              ],
+              [
+                -1480,
+                -730
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 100,
+            "coordinates": [
+              [
+                -800,
+                400
+              ],
+              [
+                800,
+                400
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 100,
+            "coordinates": [
+              [
+                -800,
+                -400
+              ],
+              [
+                -800,
+                400
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 100,
+            "coordinates": [
+              [
+                800,
+                400
+              ],
+              [
+                800,
+                -400
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 100,
+            "coordinates": [
+              [
+                800,
+                -400
+              ],
+              [
+                -800,
+                -400
+              ]
+            ]
+          }
+        ],
+        "pins": [
+          {
+            "name": "RoundRect[T]Pad_900x950_225.856_um_0.000000_0",
+            "pin_number": "1",
+            "x": -775,
+            "y": 0
+          },
+          {
+            "name": "RoundRect[T]Pad_900x950_225.856_um_0.000000_0",
+            "pin_number": "2",
+            "x": 775,
+            "y": 0
+          }
+        ]
+      }
+    },
+    {
+      "image": {
+        "name": "Resistor_SMD:R_0402_1005Metric",
+        "outlines": [
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 120,
+            "coordinates": [
+              [
+                -153.641,
+                380
+              ],
+              [
+                153.641,
+                380
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 120,
+            "coordinates": [
+              [
+                -153.641,
+                -380
+              ],
+              [
+                153.641,
+                -380
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 50,
+            "coordinates": [
+              [
+                -930,
+                470
+              ],
+              [
+                930,
+                470
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 50,
+            "coordinates": [
+              [
+                -930,
+                -470
+              ],
+              [
+                -930,
+                470
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 50,
+            "coordinates": [
+              [
+                930,
+                470
+              ],
+              [
+                930,
+                -470
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 50,
+            "coordinates": [
+              [
+                930,
+                -470
+              ],
+              [
+                -930,
+                -470
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 100,
+            "coordinates": [
+              [
+                -525,
+                270
+              ],
+              [
+                525,
+                270
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 100,
+            "coordinates": [
+              [
+                -525,
+                -270
+              ],
+              [
+                -525,
+                270
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 100,
+            "coordinates": [
+              [
+                525,
+                270
+              ],
+              [
+                525,
+                -270
+              ]
+            ]
+          },
+          {
+            "layer": "signal",
+            "type": "path",
+            "width": 100,
+            "coordinates": [
+              [
+                525,
+                -270
+              ],
+              [
+                -525,
+                -270
+              ]
+            ]
+          }
+        ],
+        "pins": [
+          {
+            "name": "RoundRect[T]Pad_540x640_135.514_um_0.000000_0",
+            "pin_number": "1",
+            "x": -510,
+            "y": 0
+          },
+          {
+            "name": "RoundRect[T]Pad_540x640_135.514_um_0.000000_0",
+            "pin_number": "2",
+            "x": 510,
+            "y": 0
+          }
+        ]
+      }
+    },
+    {
+      "padstack": {
+        "name": "RoundRect[T]Pad_540x640_135.514_um_0.000000_0",
+        "shapes": [
+          {
+            "layer": "F.Cu",
+            "aperture_width": 0,
+            "type": "polygon",
+            "coordinates": [
+              [
+                -270.514,
+                185
+              ],
+              [
+                -260.199,
+                236.859
+              ],
+              [
+                -230.823,
+                280.823
+              ],
+              [
+                -186.859,
+                310.199
+              ],
+              [
+                -135,
+                320.514
+              ],
+              [
+                135,
+                320.514
+              ],
+              [
+                186.859,
+                310.199
+              ],
+              [
+                230.823,
+                280.823
+              ],
+              [
+                260.199,
+                236.859
+              ],
+              [
+                270.514,
+                185
+              ],
+              [
+                270.514,
+                -185
+              ],
+              [
+                260.199,
+                -236.859
+              ],
+              [
+                230.823,
+                -280.823
+              ],
+              [
+                186.859,
+                -310.199
+              ],
+              [
+                135,
+                -320.514
+              ],
+              [
+                -135,
+                -320.514
+              ],
+              [
+                -186.859,
+                -310.199
+              ],
+              [
+                -230.823,
+                -280.823
+              ],
+              [
+                -260.199,
+                -236.859
+              ],
+              [
+                -270.514,
+                -185
+              ],
+              [
+                -270.514,
+                185
+              ]
+            ]
+          }
+        ],
+        "attach": "off"
+      }
+    },
+    {
+      "padstack": {
+        "name": "RoundRect[T]Pad_900x950_225.856_um_0.000000_0",
+        "shapes": [
+          {
+            "layer": "F.Cu",
+            "aperture_width": 0,
+            "type": "polygon",
+            "coordinates": [
+              [
+                -450.856,
+                250
+              ],
+              [
+                -433.664,
+                336.431
+              ],
+              [
+                -384.704,
+                409.704
+              ],
+              [
+                -311.431,
+                458.664
+              ],
+              [
+                -225,
+                475.856
+              ],
+              [
+                225,
+                475.856
+              ],
+              [
+                311.431,
+                458.664
+              ],
+              [
+                384.704,
+                409.704
+              ],
+              [
+                433.664,
+                336.431
+              ],
+              [
+                450.856,
+                250
+              ],
+              [
+                450.856,
+                -250
+              ],
+              [
+                433.664,
+                -336.431
+              ],
+              [
+                384.704,
+                -409.704
+              ],
+              [
+                311.431,
+                -458.664
+              ],
+              [
+                225,
+                -475.856
+              ],
+              [
+                -225,
+                -475.856
+              ],
+              [
+                -311.431,
+                -458.664
+              ],
+              [
+                -384.704,
+                -409.704
+              ],
+              [
+                -433.664,
+                -336.431
+              ],
+              [
+                -450.856,
+                -250
+              ],
+              [
+                -450.856,
+                250
+              ]
+            ]
+          }
+        ],
+        "attach": "off"
+      }
+    },
+    {
+      "padstack": {
+        "name": "Via[0-1]_600:300_um",
+        "shapes": [
+          {
+            "layer": "F.Cu",
+            "type": "circle",
+            "radius": 600
+          },
+          {
+            "layer": "B.Cu",
+            "type": "circle",
+            "radius": 600
+          }
+        ],
+        "attach": "off"
+      }
+    }
+  ],
+  "network": {
+    "nets": [
+      {
+        "name": "unconnected-(C1-Pad2)",
+        "pins": [
+          "C1-2"
+        ]
+      },
+      {
+        "name": "Net-(C1-Pad1)",
+        "pins": [
+          "C1-1",
+          "R1-2"
+        ]
+      },
+      {
+        "name": "unconnected-(R1-Pad1)",
+        "pins": [
+          "R1-1"
+        ]
+      }
+    ],
+    "vias": [],
+    "via_rules": [],
+    "classes": [
+      {
+        "name": "kicad_default",
+        "nets": [
+          "Net-(C1-Pad1)",
+          "unconnected-(C1-Pad2)",
+          "unconnected-(R1-Pad1)"
+        ],
+        "circuit": {
+          "use_via": "Via[0-1]_600:300_um"
+        },
+        "rule": {
+          "width": 200,
+          "clearances": [
+            {
+              "value": 200
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "wiring": {
+    "wires": [
+      {
+        "shape": {
+          "layer": "F.Cu",
+          "type": "path",
+          "width": 200,
+          "coordinates": [
+            [
+              150500,
+              -105000
+            ],
+            [
+              154540,
+              -105000
+            ]
+          ]
+        },
+        "net": "Net-(C1-Pad1)",
+        "type": "route"
+      }
+    ],
+    "vias": []
+  }
+}
