@@ -1,4 +1,4 @@
-import test from "ava"
+import { test, expect } from "bun:test"
 import { parseSexpElement } from "../lib/parse-sexp-element"
 import { readFileSync } from "node:fs"
 
@@ -9,13 +9,13 @@ test("parseSexpElement parses s-expression array representation without throwing
 
   const result = parseSexpElement(sampleData)
 
-  t.truthy(result)
-  t.is(typeof result.pcb_id, "string")
-  t.truthy(result.parser)
-  t.truthy(result.resolution)
-  t.truthy(result.unit)
-  t.truthy(result.structure)
-  t.truthy(result.placement)
-  t.truthy(result.library)
-  t.truthy(result.network)
+  expect(result).toBeTruthy()
+  expect(typeof result.pcb_id).toBe("string")
+  expect(result.parser).toBeTruthy()
+  expect(result.resolution).toBeTruthy()
+  expect(result.unit).toBeTruthy()
+  expect(result.structure).toBeTruthy()
+  expect(result.placement).toBeTruthy()
+  expect(result.library).toBeTruthy()
+  expect(result.network).toBeTruthy()
 })
