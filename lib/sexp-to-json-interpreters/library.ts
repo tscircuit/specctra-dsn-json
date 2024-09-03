@@ -24,7 +24,7 @@ export function parseSexprLibrary(elements: any[]): Library {
 
 function parseSexprImage(value: any[]): Image {
   const [name, ...elements] = value
-  const image: Partial<Image> = { name }
+  const image: Image = { name, outlines: [], pins: [] }
 
   elements.forEach((element) => {
     const [key, ...data] = element
@@ -33,11 +33,9 @@ function parseSexprImage(value: any[]): Image {
         image.side = data[0]
         break
       case "outline":
-        if (!image.outlines) image.outlines = []
         image.outlines.push(parseSexprShape(data[0]))
         break
       case "pin":
-        if (!image.pins) image.pins = []
         image.pins.push(parseSexprPin(data))
         break
       case "keepout":
@@ -54,17 +52,17 @@ function parseSexprImage(value: any[]): Image {
 
 function parseSexprPin(data: any[]): NonNullable<Image["pins"]>[number] {
   const pin: NonNullable<Image["pins"]>[number] = {
-    type: data[0],
-    id: "",
+    name: data[0],
+    pin_number: "",
     x: 0,
     y: 0,
   }
 
   if (Array.isArray(data[1]) && data[1][0] === "rotate") {
     pin.rotate = parseFloat(data[1][1])
-    ;[, , pin.id, pin.x, pin.y] = data
+    ;[, , pin.pin_number, pin.x, pin.y] = data
   } else {
-    ;[, pin.id, pin.x, pin.y] = data
+    ;[, pin.pin_number, pin.x, pin.y] = data
   }
 
   pin.x = parseFloat(pin.x as any)

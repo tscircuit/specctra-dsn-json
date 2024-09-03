@@ -10,10 +10,10 @@ export function parseSexprPlacement(elements: any[]): Placement {
 
     const componentPlacement: {
       component: string
-      place: Place
+      places: Place[]
     } = {
       component: elementName,
-      place: parsePlace(placementElements[0]),
+      places: placementElements.map(parsePlace),
     }
 
     placement.push(componentPlacement)
@@ -26,7 +26,8 @@ function parsePlace(placeElement: any[]): Place {
   const [, componentId, x, y, side, rotation, ...properties] = placeElement
   const place: Place = {
     component_id: componentId,
-    vertex: [parseFloat(x), parseFloat(y)],
+    x: parseFloat(x),
+    y: parseFloat(y),
     side: side as "front" | "back",
     rotation: parseFloat(rotation),
   }

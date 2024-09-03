@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@tscircuit/log-soup": "^1.0.2",
+    "@tscircuit/soup": "^0.0.39",
     "@types/bun": "^1.1.8",
     "@types/node": "^20.14.5",
     "bun-match-svg": "^0.0.3",
@@ -22,6 +24,7 @@
     "zod": "^3.23.8"
   },
   "dependencies": {
+    "@tscircuit/mm": "^0.0.7",
     "s-expression": "^3.1.1"
   }
 }

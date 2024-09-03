@@ -21,7 +21,7 @@ const rectSchema = baseShapeSchema.extend({
   coordinates: z.tuple([coordinatePair, coordinatePair]),
 })
 
-const pathSchema = baseShapeSchema.extend({
+export const pathSchema = baseShapeSchema.extend({
   type: z.enum(["path", "polyline_path"]),
   width: z.number(),
   coordinates: coordinateArray,
@@ -85,14 +85,14 @@ export const keepoutSchema = z.object({
 
 // Via schema
 export const viaSchema = z.object({
-  padstack_id: z.string(),
+  primary_padstack: z.string(),
   x: z.number().optional(),
   y: z.number().optional(),
   net: z.string().optional(),
   net_code: z.string().optional(),
   via_type: z.string().optional(),
   clearance_class: z.string().optional(),
-  spare_padstack_ids: z.array(z.string()).optional(),
+  spare_padstacks: z.array(z.string()).optional(),
   property: z.string().optional(),
 })
 
@@ -154,9 +154,9 @@ export const structureSchema = z.object({
   keepouts: z.array(keepoutSchema).optional(),
   via: viaSchema,
   rules: z.array(ruleSchema),
-  snap_angle: z.enum(["fortyfive_degree", "ninety_degree"]),
-  control: controlSchema,
-  autoroute_settings: autorouteSettingsSchema,
+  snap_angle: z.enum(["fortyfive_degree", "ninety_degree"]).optional(),
+  control: controlSchema.optional(),
+  autoroute_settings: autorouteSettingsSchema.optional(),
 })
 
 const sideSchema = z.enum(["front", "back"])
@@ -164,7 +164,8 @@ const sideSchema = z.enum(["front", "back"])
 // Place schema
 export const placeSchema = z.object({
   component_id: z.string(),
-  vertex: coordinatePair,
+  x: z.number(),
+  y: z.number(),
   side: sideSchema,
   rotation: z.number(),
   part_number: z.string().optional(),
@@ -182,25 +183,23 @@ export const placeSchema = z.object({
 export const placementSchema = z.array(
   z.object({
     component: z.string(),
-    place: placeSchema,
+    places: z.array(placeSchema),
   })
 )
 
 // Image schema
 export const imageSchema = z.object({
   name: z.string(),
-  outlines: z.array(shapeSchema).optional(),
-  pins: z
-    .array(
-      z.object({
-        type: z.string(),
-        id: z.string(),
-        x: z.number(),
-        y: z.number(),
-        rotate: z.number().optional(),
-      })
-    )
-    .optional(),
+  outlines: z.array(shapeSchema),
+  pins: z.array(
+    z.object({
+      name: z.string(),
+      pin_number: z.string(),
+      x: z.number(),
+      y: z.number(),
+      rotate: z.number().optional(),
+    })
+  ),
   keepouts: z.array(keepoutSchema).optional(),
   side: sideSchema.optional(),
 })
