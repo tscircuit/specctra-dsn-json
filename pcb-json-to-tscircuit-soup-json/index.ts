@@ -9,8 +9,10 @@ import {
   parsePinName,
 } from "./parse-pin-name"
 
-export const convertDsnJsonToTscircuitSoupJson = (pcb: PcbDesign) => {
-  const soupElements: AnySoupElement[][] = []
+export const convertDsnJsonToTscircuitSoupJson = (
+  pcb: PcbDesign,
+): AnySoupElement[] => {
+  const soupElements: AnySoupElement[] = []
 
   const pcbComponents = pcb.placement.flatMap((component) => component.places)
 
@@ -29,22 +31,22 @@ export const convertDsnJsonToTscircuitSoupJson = (pcb: PcbDesign) => {
     })
 
     const pcbComponentName = pcb.placement.find((p) =>
-      p.places.some((p) => p.component_id === component_id)
+      p.places.some((p) => p.component_id === component_id),
     )?.component
 
     const pcbImages = pcb.library.filter((el) => "image" in el)
     const pcbComponentImage = pcbImages.find(
-      (el) => el.image.name === pcbComponentName
+      (el) => el.image.name === pcbComponentName,
     )?.image
     if (!pcbComponentImage) {
       throw new Error(`PCB component image not found: ${pcbComponentName}`)
     }
 
     const pcbComponentOutlines = pcbComponentImage.outlines.filter((el) =>
-      el.type.includes("path")
+      el.type.includes("path"),
     ) as PathShape[]
     const pcbComponentDimensions = calculatePcbComponentDimensions(
-      pcbComponentOutlines
+      pcbComponentOutlines,
     ) ?? { width: 0, height: 0 }
 
     const soupPcbComponent = Soup.pcb_component.parse({
@@ -63,11 +65,11 @@ export const convertDsnJsonToTscircuitSoupJson = (pcb: PcbDesign) => {
     componentSoupElements.push(soupSourceComponent, soupPcbComponent)
 
     pcbComponentImage.pins.sort(
-      (a, b) => Number(a.pin_number) - Number(b.pin_number)
+      (a, b) => Number(a.pin_number) - Number(b.pin_number),
     )
 
     const pcbComponentSmtPads = pcbComponentImage.pins.filter(({ name }) =>
-      isSmtPad(name)
+      isSmtPad(name),
     )
     for (const { pin_number, x, y, name } of pcbComponentSmtPads) {
       const { shape, layer, width, height, radius } = parsePinName(name)
@@ -94,11 +96,11 @@ export const convertDsnJsonToTscircuitSoupJson = (pcb: PcbDesign) => {
       const soupPcbPin = Soup.pcb_smtpad.parse(pad)
 
       componentSoupElements.push(soupSourcePort, soupPcbPin)
-      soupElements.push(componentSoupElements)
+      soupElements.push(...componentSoupElements)
     }
 
     const pcbComponentPlatedHoles = pcbComponentImage.pins.filter(({ name }) =>
-      isPlatedHole(name)
+      isPlatedHole(name),
     )
   }
 
