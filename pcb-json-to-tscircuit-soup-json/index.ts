@@ -1,4 +1,4 @@
-import type { PathShape, PcbDesign } from "lib/types"
+import type { PathShape, DsnPcbDesign } from "lib/types"
 import * as Soup from "@tscircuit/soup"
 import type { AnySoupElement } from "@tscircuit/soup"
 import { mm } from "@tscircuit/mm"
@@ -10,7 +10,7 @@ import {
 } from "./parse-pin-name"
 
 export const convertDsnJsonToTscircuitSoupJson = (
-  pcb: PcbDesign,
+  pcb: DsnPcbDesign,
 ): AnySoupElement[] => {
   const soupElements: AnySoupElement[] = []
 

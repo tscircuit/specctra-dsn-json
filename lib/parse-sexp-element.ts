@@ -6,11 +6,11 @@ import {
   parseSexprStructure,
   parseSexprWiring,
 } from "./sexp-to-json-interpreters"
-import type { PcbDesign } from "./types"
+import type { DsnPcbDesign } from "./types"
 import { pcbDesignSchema } from "./zod-schema"
 
-export function parseSexpElements(sexp: any[]): PcbDesign {
-  const parsedElements: Partial<PcbDesign> = {
+export function parseSexpElements(sexp: any[]): DsnPcbDesign {
+  const parsedElements: Partial<DsnPcbDesign> = {
     pcb_id: sexp[1],
   }
 

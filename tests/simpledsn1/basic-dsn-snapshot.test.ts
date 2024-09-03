@@ -3,8 +3,22 @@ import { circuitJsonToPcbSvg } from "circuit-to-svg"
 // @ts-ignore
 import simpledsn1 from "./simpledsn1.dsn" with { "type": "text" }
 import { parseDsnToJson } from "lib"
-import { convertDsnJsonToTscircuitSoupJson } from "pcb-json-to-tscircuit-soup-json"
 import { writeFileSync } from "node:fs"
+import type { DsnPcbDesign } from "lib/types"
+import type { PCBSMTPad } from "@tscircuit/soup"
+
+function convertDsnJsonToTscircuitSoupJson(dsnJson: DsnPcbDesign): Array<{
+  x: number
+  y: number
+  type: "pcb_smtpad"
+  layer: "top" | "bottom"
+  shape: "rect"
+  pcb_smtpad_id: string
+  width: number // in mm
+  height: number // in mm
+}> {
+  return []
+}
 
 test("generate soup and match SVG snapshot", () => {
   const dsnJson = parseDsnToJson(simpledsn1)

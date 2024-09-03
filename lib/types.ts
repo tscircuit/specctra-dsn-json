@@ -27,7 +27,7 @@ import {
   pathSchema,
 } from "./zod-schema"
 
-export type PcbDesign = z.infer<typeof pcbDesignSchema>
+export type DsnPcbDesign = z.infer<typeof pcbDesignSchema>
 export type Parser = z.infer<typeof parserSchema>
 export type Resolution = z.infer<typeof resolutionSchema>
 export type Structure = z.infer<typeof structureSchema>

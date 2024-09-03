@@ -12,8 +12,9 @@ import {
 } from "./zod-schema"
 import { z } from "zod"
 import { parseSexpElements } from "./parse-sexp-element"
+import type { DsnPcbDesign } from "./types"
 
-export const parseDsnToJson = (dsnRaw: string) => {
+export const parseDsnToJson = (dsnRaw: string): DsnPcbDesign => {
   // Many files feature a line that breaks the s-expression parser
   // that looks like this: `(string_quote ")`, the unterminated quote
   // confuses the parser. To avoid this we just remove it.
