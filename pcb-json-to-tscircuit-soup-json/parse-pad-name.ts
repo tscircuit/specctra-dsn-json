@@ -10,16 +10,6 @@ type PadInfo = {
   customParams?: string[]
 }
 
-const padNames = [
-  "RoundRect[T]Pad_540x640_135.514_um_0.000000_0",
-  "RoundRect[T]Pad_975x1400_244.678_um",
-  "Round[A]Pad_1524_um",
-  "Oval[A]Pad_2286x1524_um",
-  "Rect[T]Pad_609.6x1270_um",
-  "Rect[B]Pad_1060x650_um",
-  "Cust[T]Pad_1000x500_1000x_1500_23_um",
-]
-
 export function parsePadName(padName: string): PadInfo {
   const parts = padName.split("_")
   const [shapeAndLayer, ...rest] = parts
