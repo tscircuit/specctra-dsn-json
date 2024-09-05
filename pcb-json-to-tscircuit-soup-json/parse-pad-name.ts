@@ -1,5 +1,3 @@
-import { mm } from "@tscircuit/mm"
-
 type PadInfo = {
   shape: string
   layer: "A" | "B" | "T"
@@ -41,7 +39,7 @@ export function parsePadName(padName: string): PadInfo {
       throw new Error(`Unable to parse diameter from ${padName}`)
     }
 
-    info.diameter = mm(parseFloat(rest[0]))
+    info.diameter = parseFloat(rest[0])
     info.width = null
     info.height = null
   } else if (shape === "RoundRect") {
@@ -51,8 +49,8 @@ export function parsePadName(padName: string): PadInfo {
     }
 
     const [width, height] = dimensions.split("x").map(parseFloat)
-    info.width = mm(width ?? 0)
-    info.height = mm(height ?? 0)
+    info.width = width ?? 0
+    info.height = height ?? 0
     info.roundedCornerRadius = parseFloat(radius)
   } else if (shape === "Oval") {
     const dimensions = rest[0]
@@ -60,8 +58,8 @@ export function parsePadName(padName: string): PadInfo {
       throw new Error(`Unable to parse dimensions from ${padName}`)
     }
     const [width, height] = dimensions.split("x").map(parseFloat)
-    const mmOvalWidth = mm(width ?? 0)
-    const mmOvalHeight = mm(height ?? 0)
+    const mmOvalWidth = width ?? 0
+    const mmOvalHeight = height ?? 0
     // Transform the oval into a circle by taking the larger dimension because tscircuit json only supports circles
     const transformedCircleDiameter = Math.max(mmOvalWidth, mmOvalHeight)
 
@@ -74,15 +72,15 @@ export function parsePadName(padName: string): PadInfo {
       throw new Error(`Unable to parse dimensions from ${padName}`)
     }
     const [width, height] = dimensions.split("x").map(parseFloat)
-    info.width = mm(width ?? 0)
-    info.height = mm(height ?? 0)
+    info.width = width ?? 0
+    info.height = height ?? 0
   } else if (shape === "Cust") {
     if (!rest[0]) {
       throw new Error(`Unable to parse dimensions from ${padName}`)
     }
     const [width, height] = rest[0].split("x").map(parseFloat)
-    info.width = mm(width ?? 0)
-    info.height = mm(height ?? 0)
+    info.width = width ?? 0
+    info.height = height ?? 0
     info.customParams = rest.slice(1)
   }
 

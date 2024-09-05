@@ -1,8 +1,9 @@
 import type { PathShape, DsnPcbDesign } from "lib/types"
 import * as Soup from "@tscircuit/soup"
 import type { AnySoupElement } from "@tscircuit/soup"
-import { mm } from "@tscircuit/mm"
 import { isPlatedHole, isSmtPad, parsePadName } from "./parse-pad-name"
+
+const toMm = (val: number) => val / 1000
 
 export const convertDsnJsonToTscircuitSoupJson = (
   pcb: DsnPcbDesign
@@ -50,10 +51,10 @@ export const convertDsnJsonToTscircuitSoupJson = (
       source_component_id: `source_component_${soupSourceComponentId}`,
       name: component_id,
       ftype: componentFunctionalType,
-      width: pcbComponentDimensions.width,
-      height: pcbComponentDimensions.height,
+      width: toMm(pcbComponentDimensions.width),
+      height: toMm(pcbComponentDimensions.height),
       rotation,
-      center: { x, y },
+      center: { x: toMm(x), y: toMm(y) },
       layer: side === "front" ? "top" : "bottom",
     })
 
@@ -83,7 +84,7 @@ export const convertDsnJsonToTscircuitSoupJson = (
         Cust: "rect",
       }
       const padLayerMap = {
-        A: "top",
+        A: ["top", "inner1", "inner2", "bottom"],
         T: "top",
         B: "bottom",
       }
@@ -93,13 +94,13 @@ export const convertDsnJsonToTscircuitSoupJson = (
         pcb_component_id: soupPcbComponent.pcb_component_id,
         pcb_port_id: soupSourcePort.source_port_id,
         type: "pcb_smtpad",
-        x: mm(x),
-        y: mm(y),
+        x: toMm(x),
+        y: toMm(y),
         shape: padShapeMap[shape as keyof typeof padShapeMap],
         layer: padLayerMap[layer as keyof typeof padLayerMap],
-        width,
-        height,
-        ...(diameter && { radius: diameter / 2 }),
+        width: toMm(width ?? 0),
+        height: toMm(height ?? 0),
+        ...(diameter && { radius: toMm(diameter / 2) }),
       }
 
       if (shape === "RoundRect") {
@@ -122,8 +123,8 @@ export const convertDsnJsonToTscircuitSoupJson = (
           padShape.coordinates
         )
 
-        smtPad.width = width
-        smtPad.height = height
+        smtPad.width = toMm(width)
+        smtPad.height = toMm(height)
       }
 
       const soupPcbPin = Soup.pcb_smtpad.parse(smtPad)
@@ -161,7 +162,7 @@ function calculatePcbComponentDimensions(outlines: PathShape[]) {
   const width = maxX - minX
   const height = maxY - minY
 
-  return { width: mm(width), height: mm(height) }
+  return { width, height }
 }
 
 function roundRectCoordinatesToRect(roundRectCoords: [number, number][]) {
@@ -170,5 +171,5 @@ function roundRectCoordinatesToRect(roundRectCoords: [number, number][]) {
   const width = Math.max(...xCoords) - Math.min(...xCoords)
   const height = Math.max(...yCoords) - Math.min(...yCoords)
 
-  return { width: mm(width), height: mm(height) }
+  return { width, height }
 }
