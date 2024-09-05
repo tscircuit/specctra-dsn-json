@@ -10,13 +10,15 @@ export const convertDsnJsonToTscircuitSoupJson = (
 ): AnySoupElement[] => {
   const soupElements: AnySoupElement[] = []
 
-  const pcbComponents = pcb.placement.flatMap((component) => component.places)
+  const pcbComponentPlacements = pcb.placement.flatMap(
+    (component) => component.places
+  )
   const pcbImages = pcb.library.filter((el) => "image" in el)
 
   for (const [
     index,
-    { component_id, x, y, side, rotation },
-  ] of pcbComponents.entries()) {
+    { component_id, x: xComponentCoord, y: yComponentCoord, side, rotation },
+  ] of pcbComponentPlacements.entries()) {
     const componentSoupElements: AnySoupElement[] = []
     const soupSourceComponentId = index + 1
     const componentFunctionalType = "simple_bug" // TODO figure out ftype
@@ -54,7 +56,7 @@ export const convertDsnJsonToTscircuitSoupJson = (
       width: toMm(pcbComponentDimensions.width),
       height: toMm(pcbComponentDimensions.height),
       rotation,
-      center: { x: toMm(x), y: toMm(y) },
+      center: { x: toMm(xComponentCoord), y: toMm(yComponentCoord) },
       layer: side === "front" ? "top" : "bottom",
     })
 
@@ -67,7 +69,12 @@ export const convertDsnJsonToTscircuitSoupJson = (
     const pcbComponentSmtPads = pcbComponentImage.pins.filter(({ name }) =>
       isSmtPad(name)
     )
-    for (const { pin_number, x, y, name } of pcbComponentSmtPads) {
+    for (const {
+      pin_number,
+      x: xPadCoord,
+      y: yPadCoord,
+      name,
+    } of pcbComponentSmtPads) {
       const { shape, layer, width, height, diameter } = parsePadName(name)
       const soupSourcePort = Soup.source_port.parse({
         type: "source_port",
@@ -94,8 +101,8 @@ export const convertDsnJsonToTscircuitSoupJson = (
         pcb_component_id: soupPcbComponent.pcb_component_id,
         pcb_port_id: soupSourcePort.source_port_id,
         type: "pcb_smtpad",
-        x: toMm(x),
-        y: toMm(y),
+        x: toMm(xComponentCoord + xPadCoord),
+        y: toMm(yComponentCoord + yPadCoord),
         shape: padShapeMap[shape as keyof typeof padShapeMap],
         layer: padLayerMap[layer as keyof typeof padLayerMap],
         width: toMm(width ?? 0),
