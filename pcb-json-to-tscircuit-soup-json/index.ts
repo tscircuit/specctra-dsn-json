@@ -1,6 +1,6 @@
 import type { PathShape, DsnPcbDesign } from "lib/types"
 import * as Soup from "@tscircuit/soup"
-import type { AnySoupElement } from "@tscircuit/soup"
+import type { AnyCircuitElement } from "@tscircuit/soup"
 import { mm } from "@tscircuit/mm"
 import {
   extractLayerFromPinName,
@@ -11,8 +11,8 @@ import {
 
 export const convertDsnJsonToTscircuitSoupJson = (
   pcb: DsnPcbDesign,
-): AnySoupElement[] => {
-  const soupElements: AnySoupElement[] = []
+): AnyCircuitElement[] => {
+  const soupElements: AnyCircuitElement[] = []
 
   const pcbComponents = pcb.placement.flatMap((component) => component.places)
 
@@ -20,7 +20,7 @@ export const convertDsnJsonToTscircuitSoupJson = (
     index,
     { component_id, x, y, side, rotation },
   ] of pcbComponents.entries()) {
-    const componentSoupElements: AnySoupElement[] = []
+    const componentSoupElements: AnyCircuitElement[] = []
     const soupSourceComponentId = index + 1
     const componentFunctionalType = "simple_bug" // TODO figure out ftype
     const soupSourceComponent = Soup.any_source_component.parse({
