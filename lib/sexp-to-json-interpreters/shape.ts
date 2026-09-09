@@ -1,4 +1,4 @@
-import type { Circle, Shape } from "lib/types"
+import type { Circle, Qarc, Shape } from "lib/types"
 
 export const SHAPE_NAMES = new Set([
   "rect",
@@ -6,6 +6,7 @@ export const SHAPE_NAMES = new Set([
   "polygon",
   "path",
   "polyline_path",
+  "qarc",
 ] as const)
 
 export function parseSexprShape(data: any[]): Shape {
@@ -53,6 +54,18 @@ export function parseSexprShape(data: any[]): Shape {
         coordinates: parseCoordinates(shapeData.slice(coordinatesStart)),
         ...(apertureWidth !== undefined && { aperture_width: apertureWidth }),
       }
+    case "qarc": {
+      // Specctra / KiCad: (qarc layer aperture_width sx sy ex ey cx cy)
+      const qarcShape: Qarc = {
+        type: "qarc",
+        layer,
+        aperture_width: parseFloat(shapeData[0]),
+        start: [parseFloat(shapeData[1]), parseFloat(shapeData[2])],
+        end: [parseFloat(shapeData[3]), parseFloat(shapeData[4])],
+        center: [parseFloat(shapeData[5]), parseFloat(shapeData[6])],
+      }
+      return qarcShape
+    }
     default:
       console.warn(`Unexpected shape type: ${shapeType}`)
       throw new Error(`Invalid shape type: ${shapeType}`)

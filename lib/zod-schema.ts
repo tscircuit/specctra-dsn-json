@@ -32,11 +32,20 @@ const polygonSchema = baseShapeSchema.extend({
   coordinates: coordinateArray,
 })
 
+export const qarcSchema = baseShapeSchema.extend({
+  type: z.literal("qarc"),
+  aperture_width: z.number(),
+  start: coordinatePair,
+  end: coordinatePair,
+  center: coordinatePair,
+})
+
 export const shapeSchema = z.discriminatedUnion("type", [
   circleSchema,
   rectSchema,
   pathSchema,
   polygonSchema,
+  qarcSchema,
 ])
 
 // Parser schema
