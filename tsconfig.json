@@ -23,8 +23,7 @@
   },
   // Include the necessary files for your project
   "include": [
-    "**/*.ts",
-    "**/*.tsx"
+    "lib/**/*.ts"
   ],
   "exclude": [
     "node_modules"

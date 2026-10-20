@@ -12,6 +12,10 @@ import { pcbDesignSchema } from "./zod-schema"
 export function parseSexpElements(sexp: any[]): DsnPcbDesign {
   const parsedElements: Partial<DsnPcbDesign> = {
     pcb_id: sexp[1],
+    wiring: {
+      wires: [],
+      vias: [],
+    },
   }
 
   sexp.slice(2).forEach((element) => {

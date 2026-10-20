@@ -1,3 +1,4 @@
+// @ts-ignore
 import parseSExpression from "s-expression"
 import { replaceStringClassesDeep } from "./replaceStringClassesDeep"
 import {
@@ -13,6 +14,11 @@ import {
 import { z } from "zod"
 import { parseSexpElements } from "./parse-sexp-element"
 import type { DsnPcbDesign } from "./types"
+
+export { parseSexpElements } from "./parse-sexp-element"
+export { convertArrayDsnToDsn } from "./convert-array-dsn-to-dsn"
+export * from "./zod-schema"
+export * from "./types"
 
 export const parseDsnToJson = (dsnRaw: string): DsnPcbDesign => {
   // Many files feature a line that breaks the s-expression parser

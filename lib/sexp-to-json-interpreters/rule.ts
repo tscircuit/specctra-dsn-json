@@ -17,6 +17,15 @@ export function parseSexprRule(value: any[]): Rule {
         clearanceObj.type = rest[1][1]
       }
       ruleObj.clearances.push(clearanceObj)
+    } else if (key === "length") {
+      ruleObj.length = {
+        min: parseFloat(rest[0]),
+        max: parseFloat(rest[1]),
+      }
+    } else if (key === "via_costs") {
+      ruleObj.via_costs = parseFloat(rest[0])
+    } else if (key === "layer_change_costs") {
+      ruleObj.layer_change_costs = parseFloat(rest[0])
     } else {
       ;(ruleObj as any)[key] = rest[0]
     }

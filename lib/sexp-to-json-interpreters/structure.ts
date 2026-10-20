@@ -76,6 +76,10 @@ function parseSexprLayer(value: any[]): Layer {
     } else if (key === "property") {
       layerObj.properties = layerObj.properties || {}
       layerObj.properties[val[0]] = val[1]
+    } else if (key === "direction") {
+      layerObj.direction = val
+    } else if (key === "cost") {
+      layerObj.cost = parseFloat(val)
     }
   })
 
