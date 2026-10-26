@@ -1,13 +1,13 @@
 import { mm } from "@tscircuit/mm"
 
-type Shape = "circle" | "rect"
+type Shape = "circle" | "rect" | "oval"
 type Layer = "top" | "bottom" | "all"
 
-interface ParsedPin {
+export interface ParsedPin {
   shape: Shape
   layer: Layer
-  width: number
-  height: number
+  width?: number
+  height?: number
   radius?: number
 }
 
@@ -48,58 +48,65 @@ export const parsePinName = (name: string): ParsedPin => {
 
   const parsedResult = parser(rest)
   const isRound = shape === "Round"
+  const isOval = shape === "Oval"
 
   return {
-    shape: isRound ? "circle" : "rect",
-    layer: layer ? layerMap[layer as InputLayer] ?? "top" : "top",
-    ...(!isRound
-      ? { width: mm(parsedResult.width), height: mm(parsedResult.height) }
+    shape: isRound ? "circle" : isOval ? "oval" : "rect",
+    layer: layer ? (layerMap[layer as InputLayer] ?? "top") : "top",
+    ...(!isRound &&
+    parsedResult.width !== undefined &&
+    parsedResult.height !== undefined
+      ? {
+          width: mm(`${parsedResult.width}um`),
+          height: mm(`${parsedResult.height}um`),
+        }
       : {}),
     ...(parsedResult.radius !== undefined
-      ? { radius: mm(parsedResult.radius) }
+      ? { radius: mm(`${parsedResult.radius}um`) }
       : {}),
   }
 }
 
-const parseRoundPad = (rest: string): Pick<ParsedPin, "radius"> => {
-  const match = rest.match(/^(\d+)_um$/)
+const parseRoundPad = (rest: string): Omit<ParsedPin, "shape" | "layer"> => {
+  const match = rest.match(/^(\d+(?:\.\d+)?)_um(?:_.*)?$/)
   if (!match) throw new Error(`Invalid Round pad format: ${rest}`)
-  const radius = parseFloat(match[1] ?? "0")
-  return { radius }
+  const diameter = Number.parseFloat(match[1] ?? "0")
+  return { radius: diameter / 2 }
 }
 
 const parseRectPad = (rest: string): Omit<ParsedPin, "shape" | "layer"> => {
-  const match = rest.match(/^(\d+)x(\d+)_um$/)
+  const match = rest.match(/^(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?)_um(?:_.*)?$/)
   if (!match) throw new Error(`Invalid Rect pad format: ${rest}`)
   return {
-    width: parseFloat(match[1] ?? "0"),
-    height: parseFloat(match[2] ?? "0"),
+    width: Number.parseFloat(match[1] ?? "0"),
+    height: Number.parseFloat(match[2] ?? "0"),
   }
 }
 
 const parseOvalPad = (rest: string): Omit<ParsedPin, "shape" | "layer"> => {
-  const match = rest.match(/^(\d+)x(\d+)_um$/)
+  const match = rest.match(/^(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?)_um(?:_.*)?$/)
   if (!match) throw new Error(`Invalid Oval pad format: ${rest}`)
   return {
-    width: parseFloat(match[1] ?? "0"),
-    height: parseFloat(match[2] ?? "0"),
+    width: Number.parseFloat(match[1] ?? "0"),
+    height: Number.parseFloat(match[2] ?? "0"),
   }
 }
 
 const parseRoundRectPad = (
-  rest: string
+  rest: string,
 ): Omit<ParsedPin, "shape" | "layer"> => {
-  const match = rest.match(/^(\d+)x(\d+)_(\d+(?:\.\d+)?)_um$/)
+  const match = rest.match(
+    /^(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?)_(\d+(?:\.\d+)?)_um(?:_.*)?$/,
+  )
   if (!match) throw new Error(`Invalid RoundRect pad format: ${rest}`)
   return {
-    width: parseFloat(match[1] ?? "0"),
-    height: parseFloat(match[2] ?? "0"),
-    radius: parseFloat(match[3] ?? "0"),
+    width: Number.parseFloat(match[1] ?? "0"),
+    height: Number.parseFloat(match[2] ?? "0"),
+    radius: Number.parseFloat(match[3] ?? "0"),
   }
 }
 
-const parseCustomPad = (rest: string): Omit<ParsedPin, "shape" | "layer"> => {
-  // This is a placeholder for parsing custom pads
+const parseCustomPad = (_rest: string): Omit<ParsedPin, "shape" | "layer"> => {
   return { width: 0, height: 0 }
 }
 
@@ -110,9 +117,8 @@ export function extractLayerFromPinName(pinName: string): "B" | "T" | "A" {
 
   if (match) {
     return match[1] as "B" | "T" | "A"
-  } else {
-    throw new Error(`Invalid layer in pin string: ${pinName}`)
   }
+  throw new Error(`Invalid layer in pin string: ${pinName}`)
 }
 
 export const isPlatedHole = (pinName: string): boolean =>
@@ -120,3 +126,4 @@ export const isPlatedHole = (pinName: string): boolean =>
 
 export const isSmtPad = (pinName: string): boolean =>
   extractLayerFromPinName(pinName) !== "A"
+

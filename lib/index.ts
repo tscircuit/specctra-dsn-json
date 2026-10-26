@@ -13,6 +13,12 @@ import {
 import { z } from "zod"
 import { parseSexpElements } from "./parse-sexp-element"
 import type { DsnPcbDesign } from "./types"
+import {
+  convertDsnJsonToCircuitJson,
+  convertDsnJsonToSoup,
+  convertDsnJsonToTscircuitSoupJson,
+  convertPcbJsonToTscircuitSoupJson,
+} from "../pcb-json-to-tscircuit-soup-json"
 
 export const parseDsnToJson = (dsnRaw: string): DsnPcbDesign => {
   // Many files feature a line that breaks the s-expression parser
@@ -29,3 +35,12 @@ export const parseDsnToJson = (dsnRaw: string): DsnPcbDesign => {
 
   return parseSexpElements(sexpr)
 }
+
+export {
+  convertDsnJsonToTscircuitSoupJson,
+  convertDsnJsonToSoup,
+  convertPcbJsonToTscircuitSoupJson,
+  convertDsnJsonToCircuitJson,
+}
+export type * from "./types"
+
