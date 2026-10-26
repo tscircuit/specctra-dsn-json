@@ -4,6 +4,7 @@ export { parseSexprPlacement } from "./placement"
 export { parseSexprLibrary } from "./library"
 export { parseSexprNetwork } from "./network"
 export { parseSexprWiring } from "./wiring"
+export { parseSexprRules } from "./rules"
 
 export function parseOnOffValue<T>(value: T): boolean | T {
   if (value === "on") {

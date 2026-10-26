@@ -19,7 +19,10 @@
     "lib": [
       "es2022"
     ],
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "bun-match-svg": ["./declarations.d.ts"]
+    }
   },
   // Include the necessary files for your project
   "include": [

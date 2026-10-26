@@ -8,16 +8,9 @@ import type { DsnPcbDesign } from "lib/types"
 import type { PCBSMTPad } from "@tscircuit/soup"
 import { logSoup } from "@tscircuit/log-soup"
 
-function convertDsnJsonToTscircuitSoupJson(dsnJson: DsnPcbDesign): Array<{
-  x: number
-  y: number
-  type: "pcb_smtpad"
-  layer: "top" | "bottom"
-  shape: "rect"
-  pcb_smtpad_id: string
-  width: number // in mm
-  height: number // in mm
-}> {
+function convertDsnJsonToTscircuitSoupJson(
+  dsnJson: DsnPcbDesign,
+): Array<PCBSMTPad> {
   const soupElements: Array<PCBSMTPad> = []
 
   dsnJson.placement.forEach((component) => {

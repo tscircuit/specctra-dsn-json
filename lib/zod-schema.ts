@@ -126,25 +126,26 @@ export const controlSchema = z.object({
   fanout_direction: z.enum(["clockwise", "counterclockwise"]).optional(),
 })
 
+export const layerRuleSchema = z.object({
+  name: z.string(),
+  active: z.union([z.string(), z.boolean()]).optional(),
+  preferred_direction: z.enum(["horizontal", "vertical"]).optional(),
+  preferred_direction_trace_costs: z.number().optional(),
+  against_preferred_direction_trace_costs: z.number().optional(),
+  rule: ruleSchema.optional(),
+})
+
 // Autoroute settings schema
 export const autorouteSettingsSchema = z.object({
-  fanout: z.union([z.string(), z.boolean()]),
-  autoroute: z.union([z.string(), z.boolean()]),
-  postroute: z.union([z.string(), z.boolean()]),
-  vias: z.union([z.string(), z.boolean()]),
-  via_costs: z.number(),
-  plane_via_costs: z.number(),
-  start_ripup_costs: z.number(),
-  start_pass_no: z.number(),
-  layer_rule: z.array(
-    z.object({
-      name: z.string(),
-      active: z.union([z.string(), z.boolean()]),
-      preferred_direction: z.enum(["horizontal", "vertical"]),
-      preferred_direction_trace_costs: z.number(),
-      against_preferred_direction_trace_costs: z.number(),
-    })
-  ),
+  fanout: z.union([z.string(), z.boolean()]).optional(),
+  autoroute: z.union([z.string(), z.boolean()]).optional(),
+  postroute: z.union([z.string(), z.boolean()]).optional(),
+  vias: z.union([z.string(), z.boolean()]).optional(),
+  via_costs: z.number().optional(),
+  plane_via_costs: z.number().optional(),
+  start_ripup_costs: z.number().optional(),
+  start_pass_no: z.number().optional(),
+  layer_rule: z.array(layerRuleSchema).optional(),
 })
 
 // Structure schema
@@ -283,3 +284,25 @@ export const pcbDesignSchema = z.object({
   network: networkSchema,
   wiring: wiringSchema,
 })
+
+// Specctra Rules file (*.rules) schema
+export const dsnRulesSchema = z.object({
+  rules_id: z.string(),
+  version: z.union([z.string(), z.number()]).optional(),
+  parser: parserSchema.optional(),
+  resolution: resolutionSchema.optional(),
+  unit: z.string().optional(),
+  snap_angle: z.enum(["fortyfive_degree", "ninety_degree"]).optional(),
+  control: controlSchema.optional(),
+  autoroute_settings: autorouteSettingsSchema.optional(),
+  layer_rules: z.array(layerRuleSchema).optional(),
+  padstacks: z.array(padstackSchema).optional(),
+  vias: z.array(viaSchema).optional(),
+  via_rules: z.array(viaRuleSchema).optional(),
+  rules: z.array(ruleSchema).optional(),
+  classes: z.array(classSchema).optional(),
+  circuit: z
+    .record(z.string(), z.union([z.string(), z.array(z.string())]))
+    .optional(),
+})
+

@@ -1,6 +1,8 @@
 import parseSExpression from "s-expression"
 import { replaceStringClassesDeep } from "./replaceStringClassesDeep"
 import {
+  dsnRulesSchema,
+  layerRuleSchema,
   librarySchema,
   networkSchema,
   pcbDesignSchema,
@@ -12,7 +14,8 @@ import {
 } from "./zod-schema"
 import { z } from "zod"
 import { parseSexpElements } from "./parse-sexp-element"
-import type { DsnPcbDesign } from "./types"
+import { parseSexprRules } from "./sexp-to-json-interpreters"
+import type { DsnPcbDesign, DsnRules } from "./types"
 
 export const parseDsnToJson = (dsnRaw: string): DsnPcbDesign => {
   // Many files feature a line that breaks the s-expression parser
@@ -27,5 +30,27 @@ export const parseDsnToJson = (dsnRaw: string): DsnPcbDesign => {
   // recursively replace String class instances with regular strings
   replaceStringClassesDeep(sexpr)
 
-  return parseSexpElements(sexpr)
+  return parseSexpElements(sexpr) as DsnPcbDesign
 }
+
+export const parseRulesToJson = (rulesRaw: string): DsnRules => {
+  const rulesText = rulesRaw.replace(`(string_quote ")`, "")
+  const sexpr = parseSExpression(rulesText)
+  replaceStringClassesDeep(sexpr)
+  return parseSexprRules(sexpr)
+}
+
+export {
+  dsnRulesSchema,
+  layerRuleSchema,
+  librarySchema,
+  networkSchema,
+  pcbDesignSchema,
+  parserSchema,
+  placementSchema,
+  resolutionSchema,
+  structureSchema,
+  wiringSchema,
+}
+export type * from "./types"
+

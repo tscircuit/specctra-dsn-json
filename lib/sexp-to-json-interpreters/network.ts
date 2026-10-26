@@ -63,7 +63,7 @@ function parseSexprNet(data: any[]): Net {
   return result
 }
 
-function parseViaRule(data: any[]): ViaRule {
+export function parseViaRule(data: any[]): ViaRule {
   const [name, via] = data
   return {
     name,
@@ -71,7 +71,7 @@ function parseViaRule(data: any[]): ViaRule {
   }
 }
 
-function parseSexprClass(data: any[]): Class {
+export function parseSexprClass(data: any[]): Class {
   const [name, ...rest] = data
   const result: Class = {
     name,
@@ -102,7 +102,9 @@ function parseSexprClass(data: any[]): Class {
   return result
 }
 
-function parseSexprCircuit(data: any[]): { [key: string]: string | string[] } {
+export function parseSexprCircuit(data: any[]): {
+  [key: string]: string | string[]
+} {
   const result: { [key: string]: string | string[] } = {}
   data.forEach((item) => {
     const [key, ...values] = item

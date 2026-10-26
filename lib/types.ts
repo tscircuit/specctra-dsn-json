@@ -25,9 +25,13 @@ import {
   shapeSchema,
   circleSchema,
   pathSchema,
+  layerRuleSchema,
+  dsnRulesSchema,
 } from "./zod-schema"
 
 export type DsnPcbDesign = z.infer<typeof pcbDesignSchema>
+export type DsnRules = z.infer<typeof dsnRulesSchema>
+export type LayerRule = z.infer<typeof layerRuleSchema>
 export type Parser = z.infer<typeof parserSchema>
 export type Resolution = z.infer<typeof resolutionSchema>
 export type Structure = z.infer<typeof structureSchema>
@@ -52,3 +56,4 @@ export type Wire = z.infer<typeof wireSchema>
 export type Shape = z.infer<typeof shapeSchema>
 export type Circle = z.infer<typeof circleSchema>
 export type PathShape = z.infer<typeof pathSchema>
+

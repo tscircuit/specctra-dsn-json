@@ -71,7 +71,7 @@ function parseSexprPin(data: any[]): NonNullable<Image["pins"]>[number] {
   return pin
 }
 
-function parseSexprPadstack(value: any[]): Padstack {
+export function parseSexprPadstack(value: any[]): Padstack {
   const [name, ...elements] = value
   const padstack: Partial<Padstack> = { name, shapes: [] }
 

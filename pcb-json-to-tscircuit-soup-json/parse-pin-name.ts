@@ -52,9 +52,14 @@ export const parsePinName = (name: string): ParsedPin => {
   return {
     shape: isRound ? "circle" : "rect",
     layer: layer ? layerMap[layer as InputLayer] ?? "top" : "top",
-    ...(!isRound
-      ? { width: mm(parsedResult.width), height: mm(parsedResult.height) }
-      : {}),
+    width:
+      !isRound && "width" in parsedResult
+        ? mm(parsedResult.width as number)
+        : 0,
+    height:
+      !isRound && "height" in parsedResult
+        ? mm(parsedResult.height as number)
+        : 0,
     ...(parsedResult.radius !== undefined
       ? { radius: mm(parsedResult.radius) }
       : {}),

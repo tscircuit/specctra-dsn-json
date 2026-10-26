@@ -115,7 +115,7 @@ function parseSexprBoundary(value: any[]): Boundary {
   return boundarySchema.parse(boundaryObject)
 }
 
-function parseSexprControl(value: any[]): Control {
+export function parseSexprControl(value: any[]): Control {
   const controlObj: Partial<Control> = {}
 
   value.forEach((v: any) => {
@@ -126,22 +126,31 @@ function parseSexprControl(value: any[]): Control {
   return controlSchema.parse(controlObj)
 }
 
-function parseSexprAutorouteSettings(value: any[]): AutorouteSettings {
+export function parseSexprLayerRule(rest: any[]) {
+  const [name, ...layerSettings] = rest
+  const layerRule: any = { name }
+  layerSettings.forEach((setting: any) => {
+    const [settingKey, ...settingRest] = setting
+    if (settingKey === "rule") {
+      layerRule.rule = parseSexprRule(settingRest)
+    } else {
+      const settingValue = settingRest[0]
+      layerRule[settingKey] = isNaN(settingValue)
+        ? parseOnOffValue(settingValue)
+        : parseFloat(settingValue)
+    }
+  })
+  return layerRule
+}
+
+export function parseSexprAutorouteSettings(value: any[]): AutorouteSettings {
   const settings: Partial<AutorouteSettings> = {}
   const layerRules: any[] = []
 
   value.forEach((v: any) => {
     const [key, ...rest] = v
     if (key === "layer_rule") {
-      const [name, ...layerSettings] = rest
-      const layerRule: any = { name }
-      layerSettings.forEach((setting: any) => {
-        const [settingKey, settingValue] = setting
-        layerRule[settingKey] = isNaN(settingValue)
-          ? settingValue
-          : parseFloat(settingValue)
-      })
-      layerRules.push(layerRule)
+      layerRules.push(parseSexprLayerRule(rest))
     } else {
       ;(settings as any)[key] = isNaN(rest[0])
         ? parseOnOffValue(rest[0])

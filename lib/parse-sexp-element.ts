@@ -3,6 +3,7 @@ import {
   parseSexprNetwork,
   parseSexprParser,
   parseSexprPlacement,
+  parseSexprRules,
   parseSexprStructure,
   parseSexprWiring,
 } from "./sexp-to-json-interpreters"
@@ -10,6 +11,10 @@ import type { DsnPcbDesign } from "./types"
 import { pcbDesignSchema } from "./zod-schema"
 
 export function parseSexpElements(sexp: any[]): DsnPcbDesign {
+  if (sexp[0] === "rules") {
+    return parseSexprRules(sexp) as unknown as DsnPcbDesign
+  }
+
   const parsedElements: Partial<DsnPcbDesign> = {
     pcb_id: sexp[1],
   }
